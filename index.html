@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Gym" />
+  <title>Gym Plan</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --card: #1c1c1c;
+      --border: #2a2a2a;
+      --accent: #c8ff00;
+      --accent-dim: rgba(200,255,0,0.12);
+      --text: #f0f0f0;
+      --muted: #666;
+      --danger: #ff4444;
+      --tag-bg: rgba(200,255,0,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100dvh;
+      overscroll-behavior: none;
+    }
+
+    /* ---- TOP BAR ---- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-title { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .topbar-title span { color: var(--accent); }
+    .add-day-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ---- NAV TABS ---- */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      padding: 10px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tab.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    /* ---- VIEWS ---- */
+    .view { display: none; padding: 0 16px 100px; }
+    .view.active { display: block; }
+
+    /* ---- DAY CARD ---- */
+    .day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 16px 0 4px;
+    }
+    .day-name { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+    .day-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--tag-bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(200,255,0,0.2);
+    }
+    .day-actions { display: flex; gap: 6px; }
+    .icon-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 7px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .day-cardio {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      padding-left: 2px;
+    }
+
+    /* ---- EXERCISE TABLE ---- */
+    .ex-table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+    .ex-table thead th {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 8px;
+      background: #1a1a1a;
+      text-align: left;
+    }
+    .ex-table thead th:not(:first-child) { text-align: center; }
+    .ex-table tbody tr { border-bottom: 1px solid var(--border); }
+    .ex-table tbody tr:last-child { border-bottom: none; }
+    .ex-table tbody td {
+      font-size: 13px;
+      padding: 10px 8px;
+      background: var(--card);
+      vertical-align: middle;
+    }
+    .ex-table tbody td:not(:first-child) { text-align: center; color: var(--muted); font-size: 12px; }
+    .ex-table tbody td:first-child { font-weight: 500; }
+    .ex-name-wrap { display: flex; align-items: center; gap: 6px; }
+    .ex-menu-btn {
+      background: none;
+      border: none;
+      color: var(--border);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0 2px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .ex-menu-btn:hover { color: var(--muted); }
+    .table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .day-note {
+      font-size: 11.5px;
+      color: var(--muted);
+      padding: 0 2px 12px;
+    }
+    .day-note span { color: var(--accent); font-weight: 600; }
+
+    /* ---- ADD EXERCISE BTN ---- */
+    .add-ex-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.15s;
+    }
+    .add-ex-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ---- DIVIDER ---- */
+    .divider { height: 1px; background: var(--border); margin: 6px 0 0; }
+
+    /* ---- NOTES VIEW ---- */
+    .notes-list { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .note-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .note-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .note-title { font-size: 14px; font-weight: 700; }
+    .note-date { font-size: 11px; color: var(--muted); }
+    .note-body { font-size: 13px; color: #aaa; line-height: 1.5; white-space: pre-wrap; }
+    .add-note-btn {
+      width: 100%;
+      margin-top: 14px;
+      background: var(--accent);
+      border: none;
+      color: #000;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ---- PROGRESS VIEW ---- */
+    .progress-section { margin-top: 16px; }
+    .progress-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .progress-val { font-size: 28px; font-weight: 800; color: var(--accent); margin-bottom: 14px; }
+    .stat-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    .stat-card {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-val { font-size: 22px; font-weight: 800; }
+    .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .history-entry {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .history-day { font-size: 13px; font-weight: 600; }
+    .history-date { font-size: 11px; color: var(--muted); }
+    .history-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--tag-bg);
+      border: 1px solid rgba(200,255,0,0.2);
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .log-btn {
+      width: 100%;
+      margin-top: 10px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ---- MODAL ---- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 20px 36px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 85dvh;
+      overflow-y: auto;
+    }
+    .modal-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 18px;
+    }
+    .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 16px; }
+    .field-label { font-size: 12px; color: var(--muted); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+    .field-input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 11px 13px;
+      font-size: 14px;
+      margin-bottom: 14px;
+      outline: none;
+    }
+    .field-input:focus { border-color: var(--accent); }
+    .row-fields { display: flex; gap: 10px; }
+    .row-fields .field-group { flex: 1; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-save {
+      flex: 2;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-cancel {
+      flex: 1;
+      background: var(--card);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-danger {
+      background: rgba(255,68,68,0.1);
+      color: var(--danger);
+      border: 1px solid rgba(255,68,68,0.3);
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+    }
+    textarea.field-input { min-height: 90px; resize: vertical; font-family: inherit; }
+
+    /* ---- CONTEXT MENU ---- */
+    .ctx-menu {
+      position: fixed;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 6px;
+      z-index: 300;
+      min-width: 160px;
+      display: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+    .ctx-menu.open { display: block; }
+    .ctx-item {
+      padding: 10px 14px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .ctx-item:hover { background: var(--card); }
+    .ctx-item.danger { color: var(--danger); }
+
+    /* ---- BOTTOM NAV ---- */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding: 10px 0 env(safe-area-inset-bottom, 10px);
+      z-index: 100;
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 0;
+      transition: color 0.15s;
+    }
+    .nav-item.active { color: var(--accent); }
+    .nav-icon { font-size: 20px; }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+    }
+    .empty-state .big { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title">GYM <span>PLAN</span></div>
+  <button class="add-day-btn" onclick="openAddDay()">+ День</button>
+</div>
+
+<!-- TABS (days) -->
+<div class="tabs" id="dayTabs"></div>
+
+<!-- VIEWS -->
+<div id="viewWorkout" class="view active"></div>
+<div id="viewNotes" class="view">
+  <div class="notes-list" id="notesList"></div>
+  <button class="add-note-btn" onclick="openAddNote()">+ Новая заметка</button>
+</div>
+<div id="viewProgress" class="view">
+  <div class="progress-section">
+    <div class="progress-label">Вес тела</div>
+    <div class="progress-val" id="currentWeight">-- кг</div>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-val" id="totalSessions">0</div>
+        <div class="stat-sub">тренировок</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="weekStreak">0</div>
+        <div class="stat-sub">недель подряд</div>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">История тренировок</div>
+    <div id="historyList"></div>
+    <button class="log-btn" onclick="openLogSession()">Отметить тренировку сегодня</button>
+    <button class="log-btn" style="margin-top:8px;" onclick="openLogWeight()">Обновить вес</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-item active" onclick="switchView('workout', this)">
+    <span class="nav-icon">🏋️</span>
+    <span>План</span>
+  </button>
+  <button class="nav-item" onclick="switchView('notes', this)">
+    <span class="nav-icon">📝</span>
+    <span>Заметки</span>
+  </button>
+  <button class="nav-item" onclick="switchView('progress', this)">
+    <span class="nav-icon">📈</span>
+    <span>Прогресс</span>
+  </button>
+</div>
+
+<!-- MODAL: Add/Edit Exercise -->
+<div class="modal-overlay" id="modalExercise">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalExTitle">Упражнение</div>
+    <div class="field-label">Название</div>
+    <input class="field-input" id="exName" placeholder="Жим штанги лёжа" />
+    <div class="row-fields">
+      <div class="field-group">
+        <div class="field-label">Сеты</div>
+        <input class="field-input" id="exSets" type="number" placeholder="4" />
+      </div>
+      <div class="field-group">
+        <div class="field-label">Повторы</div>
+        <input class="field-input" id="exReps" placeholder="10" />
+      </div>
+      <div class="field-group">
+        <div class="field-label">Вес</div>
+        <input class="field-input" id="exLoad" placeholder="60 кг" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalExercise')">Отмена</button>
+      <button class="btn-save" onclick="saveExercise()">Сохранить</button>
+    </div>
+    <button class="btn-danger" id="deleteExBtn" onclick="deleteExercise()" style="display:none;">Удалить упражнение</button>
+  </div>
+</div>
+
+<!-- MODAL: Add/Edit Day -->
+<div class="modal-overlay" id="modalDay">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalDayTitle">Новый день</div>
+    <div class="field-label">Название дня</div>
+    <input class="field-input" id="dayName" placeholder="Понедельник" />
+    <div class="field-label">Группы мышц</div>
+    <input class="field-input" id="dayTag" placeholder="Грудь + Трицепс" />
+    <div class="field-label">Кардио / разминка</div>
+    <input class="field-input" id="dayCardio" placeholder="Бег 10 мин / скорость 10-12" />
+    <div class="field-label">Заметка внизу</div>
+    <input class="field-input" id="dayNote" placeholder="Пресс: 3 x 30" />
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalDay')">Отмена</button>
+      <button class="btn-save" onclick="saveDay()">Сохранить</button>
+    </div>
+    <button class="btn-danger" id="deleteDayBtn" onclick="deleteDay()" style="display:none;">Удалить день</button>
+  </div>
+</div>
+
+<!-- MODAL: Add Note -->
+<div class="modal-overlay" id="modalNote">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Заметка</div>
+    <div class="field-label">Заголовок</div>
+    <input class="field-input" id="noteTitle" placeholder="Личный рекорд" />
+    <div class="field-label">Текст</div>
+    <textarea class="field-input" id="noteBody" placeholder="Пожал 100 кг впервые..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalNote')">Отмена</button>
+      <button class="btn-save" onclick="saveNote()">Сохранить</button>
+    </div>
+    <button class="btn-danger" id="deleteNoteBtn" onclick="deleteNote()" style="display:none;">Удалить</button>
+  </div>
+</div>
+
+<!-- MODAL: Log session -->
+<div class="modal-overlay" id="modalLog">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Тренировка выполнена</div>
+    <div class="field-label">День</div>
+    <select class="field-input" id="logDaySelect" style="appearance:auto;color:var(--text);"></select>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalLog')">Отмена</button>
+      <button class="btn-save" onclick="saveSession()">Отметить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Log weight -->
+<div class="modal-overlay" id="modalWeight">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Обновить вес</div>
+    <div class="field-label">Вес (кг)</div>
+    <input class="field-input" id="weightInput" type="number" step="0.1" placeholder="70" />
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modalWeight')">Отмена</button>
+      <button class="btn-save" onclick="saveWeight()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div class="ctx-menu" id="ctxMenu">
+  <div class="ctx-item" id="ctxEdit">✏️ Редактировать</div>
+  <div class="ctx-item danger" id="ctxDelete">🗑️ Удалить</div>
+</div>
+
+<script>
+// ---- STATE ----
+const DEFAULT_DATA = {
+  days: [
+    {
+      id: 'd1', name: 'Понедельник', tag: 'Грудь + Плечи + Трицепс',
+      cardio: 'Разминка: бег 10 мин / скорость 10-12',
+      note: 'Пресс: 3 x 30',
+      exercises: [
+        { id: 'e1', name: 'Жим штанги лёжа', sets: 6, reps: '6', load: '62-65 кг' },
+        { id: 'e2', name: 'Бабочка', sets: 4, reps: '15', load: '45 кг' },
+        { id: 'e3', name: 'Жим нижнего блока', sets: 4, reps: '15', load: '50 кг' },
+        { id: 'e4', name: 'Махи в сторону стоя', sets: 4, reps: '12', load: '10 кг' },
+        { id: 'e5', name: 'Французский жим лёжа', sets: 4, reps: '10', load: '25 кг' },
+      ]
+    },
+    {
+      id: 'd2', name: 'Среда', tag: 'Спина + Бицепс',
+      cardio: 'Разминка: бег 10 мин / скорость 10-12',
+      note: 'Пресс: 3 x 30',
+      exercises: [
+        { id: 'e6', name: 'Становая тяга', sets: 4, reps: '10', load: '85 кг' },
+        { id: 'e7', name: 'Тяга штанги в наклоне', sets: 4, reps: '10', load: '50 кг' },
+        { id: 'e8', name: 'Подтягивания', sets: 4, reps: '10', load: 'без доп. веса' },
+        { id: 'e9', name: 'Тяга верхнего блока', sets: 4, reps: '10', load: '45 кг' },
+        { id: 'e10', name: 'Подъём гантелей бицепс', sets: 4, reps: '15', load: '10 кг' },
+      ]
+    },
+    {
+      id: 'd3', name: 'Пятница', tag: 'Ноги',
+      cardio: 'Разминка: бег 10 мин / скорость 10-12',
+      note: 'Боковая планка: 3 x 1 мин',
+      exercises: [
+        { id: 'e11', name: 'Приседание со штангой на спине', sets: 4, reps: '12', load: '75 кг' },
+        { id: 'e12', name: 'Румынская тяга', sets: 4, reps: '15', load: '50 кг' },
+        { id: 'e13', name: 'Жим ногами', sets: 4, reps: '15', load: '200 кг' },
+        { id: 'e14', name: 'Разгибание ног', sets: 4, reps: '12', load: '45 кг' },
+        { id: 'e15', name: 'Жим носками', sets: 4, reps: '15', load: '100 кг' },
+        { id: 'e16', name: 'Разведение / сведение ног', sets: 3, reps: '15', load: '45 кг' },
+      ]
+    }
+  ],
+  notes: [],
+  sessions: [],
+  weight: null
+};
+
+let state = JSON.parse(localStorage.getItem('gymplan')) || JSON.parse(JSON.stringify(DEFAULT_DATA));
+let activeDay = state.days[0]?.id || null;
+let editingExId = null;
+let editingExDayId = null;
+let editingDayId = null;
+let editingNoteId = null;
+
+function save() { localStorage.setItem('gymplan', JSON.stringify(state)); }
+
+function uid() { return Math.random().toString(36).slice(2, 9); }
+
+// ---- RENDER ----
+function render() {
+  renderTabs();
+  renderWorkout();
+  renderNotes();
+  renderProgress();
+}
+
+function renderTabs() {
+  const container = document.getElementById('dayTabs');
+  container.innerHTML = state.days.map(d =>
+    `<button class="tab${d.id === activeDay ? ' active' : ''}" onclick="switchDay('${d.id}')">${d.name}</button>`
+  ).join('');
+}
+
+function renderWorkout() {
+  const el = document.getElementById('viewWorkout');
+  if (!state.days.length) {
+    el.innerHTML = `<div class="empty-state"><div class="big">🏋️</div><p>Нет дней тренировок.<br>Нажми "+ День" чтобы добавить.</p></div>`;
+    return;
+  }
+  const day = state.days.find(d => d.id === activeDay);
+  if (!day) return;
+
+  const rows = day.exercises.map(ex => `
+    <tr>
+      <td>
+        <div class="ex-name-wrap">
+          <button class="ex-menu-btn" onclick="openExCtx(event,'${day.id}','${ex.id}')">⋯</button>
+          ${ex.name}
+        </div>
+      </td>
+      <td>${ex.sets}</td>
+      <td>${ex.reps}</td>
+      <td>${ex.load}</td>
+    </tr>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="day-header">
+      <div>
+        <div class="day-name">${day.name}</div>
+        <div class="day-tag">${day.tag}</div>
+      </div>
+      <div class="day-actions">
+        <button class="icon-btn" onclick="openEditDay('${day.id}')" title="Редактировать день">✏️</button>
+      </div>
+    </div>
+    ${day.cardio ? `<div class="day-cardio">🏃 ${day.cardio}</div>` : ''}
+    <div class="table-wrap">
+      <table class="ex-table">
+        <thead><tr><th>Упражнение</th><th>Сеты</th><th>Повт.</th><th>Вес</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    ${day.note ? `<div class="day-note"><span>+</span> ${day.note}</div>` : ''}
+    <button class="add-ex-btn" onclick="openAddExercise('${day.id}')">+ Добавить упражнение</button>
+  `;
+}
+
+function renderNotes() {
+  const el = document.getElementById('notesList');
+  if (!state.notes.length) {
+    el.innerHTML = `<div class="empty-state"><div class="big">📝</div><p>Нет заметок. Добавь первую!</p></div>`;
+    return;
+  }
+  el.innerHTML = state.notes.slice().reverse().map(n => `
+    <div class="note-card" onclick="openEditNote('${n.id}')">
+      <div class="note-card-header">
+        <div class="note-title">${n.title}</div>
+        <div class="note-date">${n.date}</div>
+      </div>
+      <div class="note-body">${n.body}</div>
+    </div>
+  `).join('');
+}
+
+function renderProgress() {
+  document.getElementById('currentWeight').textContent = state.weight ? `${state.weight} кг` : '-- кг';
+  document.getElementById('totalSessions').textContent = state.sessions.length;
+
+  // Week streak
+  const weeks = {};
+  state.sessions.forEach(s => {
+    const d = new Date(s.date);
+    const week = `${d.getFullYear()}-W${Math.ceil(d.getDate()/7)}`;
+    weeks[week] = true;
+  });
+  document.getElementById('weekStreak').textContent = Object.keys(weeks).length;
+
+  const hist = document.getElementById('historyList');
+  if (!state.sessions.length) {
+    hist.innerHTML = `<div class="empty-state" style="padding:20px 0;"><p>Ещё нет записей</p></div>`;
+    return;
+  }
+  hist.innerHTML = state.sessions.slice().reverse().slice(0, 15).map(s => `
+    <div class="history-entry">
+      <div>
+        <div class="history-day">${s.dayName}</div>
+        <div class="history-date">${s.date}</div>
+      </div>
+      <div class="history-badge">Выполнено</div>
+    </div>
+  `).join('');
+}
+
+// ---- NAVIGATION ----
+function switchView(view, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('viewWorkout').style.display = view === 'workout' ? 'block' : 'none';
+  document.getElementById('viewNotes').style.display = view === 'notes' ? 'block' : 'none';
+  document.getElementById('viewProgress').style.display = view === 'progress' ? 'block' : 'none';
+  document.getElementById('viewWorkout').classList.toggle('active', view === 'workout');
+  document.getElementById('viewNotes').classList.toggle('active', view === 'notes');
+  document.getElementById('viewProgress').classList.toggle('active', view === 'progress');
+  document.getElementById('dayTabs').style.display = view === 'workout' ? 'flex' : 'none';
+  btn.classList.add('active');
+}
+
+function switchDay(id) {
+  activeDay = id;
+  renderTabs();
+  renderWorkout();
+}
+
+// ---- EXERCISE ----
+function openAddExercise(dayId) {
+  editingExId = null;
+  editingExDayId = dayId;
+  document.getElementById('modalExTitle').textContent = 'Новое упражнение';
+  document.getElementById('exName').value = '';
+  document.getElementById('exSets').value = '';
+  document.getElementById('exReps').value = '';
+  document.getElementById('exLoad').value = '';
+  document.getElementById('deleteExBtn').style.display = 'none';
+  document.getElementById('modalExercise').classList.add('open');
+}
+
+function openEditExercise(dayId, exId) {
+  const day = state.days.find(d => d.id === dayId);
+  const ex = day.exercises.find(e => e.id === exId);
+  editingExId = exId;
+  editingExDayId = dayId;
+  document.getElementById('modalExTitle').textContent = 'Редактировать';
+  document.getElementById('exName').value = ex.name;
+  document.getElementById('exSets').value = ex.sets;
+  document.getElementById('exReps').value = ex.reps;
+  document.getElementById('exLoad').value = ex.load;
+  document.getElementById('deleteExBtn').style.display = 'block';
+  document.getElementById('modalExercise').classList.add('open');
+}
+
+function saveExercise() {
+  const name = document.getElementById('exName').value.trim();
+  if (!name) return;
+  const day = state.days.find(d => d.id === editingExDayId);
+  if (editingExId) {
+    const ex = day.exercises.find(e => e.id === editingExId);
+    ex.name = name;
+    ex.sets = document.getElementById('exSets').value;
+    ex.reps = document.getElementById('exReps').value;
+    ex.load = document.getElementById('exLoad').value;
+  } else {
+    day.exercises.push({
+      id: uid(), name,
+      sets: document.getElementById('exSets').value,
+      reps: document.getElementById('exReps').value,
+      load: document.getElementById('exLoad').value
+    });
+  }
+  save(); closeModal('modalExercise'); render();
+}
+
+function deleteExercise() {
+  const day = state.days.find(d => d.id === editingExDayId);
+  day.exercises = day.exercises.filter(e => e.id !== editingExId);
+  save(); closeModal('modalExercise'); render();
+}
+
+// ---- CONTEXT MENU ----
+let ctxDayId = null, ctxExId = null;
+function openExCtx(e, dayId, exId) {
+  e.stopPropagation();
+  ctxDayId = dayId; ctxExId = exId;
+  const menu = document.getElementById('ctxMenu');
+  menu.classList.add('open');
+  const x = Math.min(e.clientX, window.innerWidth - 180);
+  const y = Math.min(e.clientY, window.innerHeight - 100);
+  menu.style.left = x + 'px';
+  menu.style.top = y + 'px';
+  document.getElementById('ctxEdit').onclick = () => { closeCtx(); openEditExercise(ctxDayId, ctxExId); };
+  document.getElementById('ctxDelete').onclick = () => {
+    const day = state.days.find(d => d.id === ctxDayId);
+    day.exercises = day.exercises.filter(e => e.id !== ctxExId);
+    save(); closeCtx(); render();
+  };
+}
+function closeCtx() { document.getElementById('ctxMenu').classList.remove('open'); }
+document.addEventListener('click', closeCtx);
+
+// ---- DAY ----
+function openAddDay() {
+  editingDayId = null;
+  document.getElementById('modalDayTitle').textContent = 'Новый день';
+  document.getElementById('dayName').value = '';
+  document.getElementById('dayTag').value = '';
+  document.getElementById('dayCardio').value = '';
+  document.getElementById('dayNote').value = '';
+  document.getElementById('deleteDayBtn').style.display = 'none';
+  document.getElementById('modalDay').classList.add('open');
+}
+
+function openEditDay(id) {
+  const day = state.days.find(d => d.id === id);
+  editingDayId = id;
+  document.getElementById('modalDayTitle').textContent = 'Редактировать день';
+  document.getElementById('dayName').value = day.name;
+  document.getElementById('dayTag').value = day.tag;
+  document.getElementById('dayCardio').value = day.cardio || '';
+  document.getElementById('dayNote').value = day.note || '';
+  document.getElementById('deleteDayBtn').style.display = 'block';
+  document.getElementById('modalDay').classList.add('open');
+}
+
+function saveDay() {
+  const name = document.getElementById('dayName').value.trim();
+  if (!name) return;
+  if (editingDayId) {
+    const day = state.days.find(d => d.id === editingDayId);
+    day.name = name;
+    day.tag = document.getElementById('dayTag').value;
+    day.cardio = document.getElementById('dayCardio').value;
+    day.note = document.getElementById('dayNote').value;
+  } else {
+    const newDay = { id: uid(), name, tag: document.getElementById('dayTag').value, cardio: document.getElementById('dayCardio').value, note: document.getElementById('dayNote').value, exercises: [] };
+    state.days.push(newDay);
+    activeDay = newDay.id;
+  }
+  save(); closeModal('modalDay'); render();
+}
+
+function deleteDay() {
+  state.days = state.days.filter(d => d.id !== editingDayId);
+  activeDay = state.days[0]?.id || null;
+  save(); closeModal('modalDay'); render();
+}
+
+// ---- NOTES ----
+function openAddNote() {
+  editingNoteId = null;
+  document.getElementById('noteTitle').value = '';
+  document.getElementById('noteBody').value = '';
+  document.getElementById('deleteNoteBtn').style.display = 'none';
+  document.getElementById('modalNote').classList.add('open');
+}
+
+function openEditNote(id) {
+  const note = state.notes.find(n => n.id === id);
+  editingNoteId = id;
+  document.getElementById('noteTitle').value = note.title;
+  document.getElementById('noteBody').value = note.body;
+  document.getElementById('deleteNoteBtn').style.display = 'block';
+  document.getElementById('modalNote').classList.add('open');
+}
+
+function saveNote() {
+  const title = document.getElementById('noteTitle').value.trim();
+  if (!title) return;
+  const body = document.getElementById('noteBody').value;
+  const date = new Date().toLocaleDateString('ru-RU', { day:'numeric', month:'short', year:'numeric' });
+  if (editingNoteId) {
+    const n = state.notes.find(n => n.id === editingNoteId);
+    n.title = title; n.body = body;
+  } else {
+    state.notes.push({ id: uid(), title, body, date });
+  }
+  save(); closeModal('modalNote'); renderNotes();
+}
+
+function deleteNote() {
+  state.notes = state.notes.filter(n => n.id !== editingNoteId);
+  save(); closeModal('modalNote'); renderNotes();
+}
+
+// ---- PROGRESS ----
+function openLogSession() {
+  const sel = document.getElementById('logDaySelect');
+  sel.innerHTML = state.days.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+  document.getElementById('modalLog').classList.add('open');
+}
+
+function saveSession() {
+  const dayId = document.getElementById('logDaySelect').value;
+  const day = state.days.find(d => d.id === dayId);
+  const date = new Date().toLocaleDateString('ru-RU', { day:'numeric', month:'short' });
+  state.sessions.push({ id: uid(), dayId, dayName: day.name, date });
+  save(); closeModal('modalLog'); renderProgress();
+}
+
+function openLogWeight() {
+  document.getElementById('weightInput').value = state.weight || '';
+  document.getElementById('modalWeight').classList.add('open');
+}
+
+function saveWeight() {
+  const v = parseFloat(document.getElementById('weightInput').value);
+  if (isNaN(v)) return;
+  state.weight = v;
+  save(); closeModal('modalWeight'); renderProgress();
+}
+
+// ---- MODALS ----
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ---- INIT ----
+document.getElementById('dayTabs').style.display = 'flex';
+['viewNotes','viewProgress'].forEach(id => document.getElementById(id).style.display = 'none');
+render();
+</script>
+
+<!-- SERVICE WORKER REGISTRATION -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
