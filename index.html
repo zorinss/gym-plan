@@ -578,7 +578,7 @@ textarea.f-input { min-height: 84px; resize: vertical; }
       <button id="auTabL" class="on" onclick="setAuthMode('login')">Вход</button>
       <button id="auTabR" onclick="setAuthMode('register')">Регистрация</button>
     </div>
-    <input class="f-input" id="auName" placeholder="Логин" autocomplete="username" />
+    <input class="f-input" id="auName" placeholder="Email или логин" autocomplete="username" />
     <input class="f-input" id="auPass" type="password" placeholder="Пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter')authSubmit()" />
     <input class="f-input" id="auPass2" type="password" placeholder="Повтори пароль" style="display:none;" onkeydown="if(event.key==='Enter')authSubmit()" />
     <div class="auth-err" id="authErr"></div>
@@ -663,6 +663,7 @@ function niceAuthError(msg) {
   if (/already registered|already exists|user_already/i.test(msg)) return 'Такой логин уже занят';
   if (/email not confirmed/i.test(msg)) return 'В Supabase включено подтверждение email - отключи его в настройках (см. инструкцию)';
   if (/password should be at least|weak.?password/i.test(msg)) return 'Пароль слишком короткий (мин. 6 символов)';
+  if (/email address.*invalid|invalid.*email/i.test(msg)) return 'Supabase не принимает выдуманный домен - войди по настоящему email (например твой gmail)';
   if (/failed to fetch|networkerror|load failed/i.test(msg)) return 'Нет связи с сервером - проверь интернет и что URL/ключ Supabase верные';
   return msg;
 }
@@ -673,7 +674,7 @@ function sessionAuth(session) {
 }
 async function backendRegister(u, p) {
   if (BACKEND === 'supabase') {
-    const email = u + '@' + ACCOUNT_DOMAIN;
+    const email = u.includes('@') ? u : u + '@' + ACCOUNT_DOMAIN;
     const { data, error } = await sb.auth.signUp({ email, password: p });
     if (error) throw new Error(error.message);
     if (!data.session) {
@@ -693,7 +694,7 @@ async function backendRegister(u, p) {
 }
 async function backendLogin(u, p) {
   if (BACKEND === 'supabase') {
-    const email = u + '@' + ACCOUNT_DOMAIN;
+    const email = u.includes('@') ? u : u + '@' + ACCOUNT_DOMAIN;
     const { data, error } = await sb.auth.signInWithPassword({ email, password: p });
     if (error) throw new Error(error.message);
     return sessionAuth(data.session);
@@ -770,7 +771,11 @@ async function authSubmit() {
   const u = document.getElementById('auName').value.trim().toLowerCase();
   const p = document.getElementById('auPass').value;
   const errEl = document.getElementById('authErr'); errEl.textContent = '';
-  if (!/^[a-z0-9_]{3,20}$/.test(u)) { errEl.textContent = 'Логин: 3-20 символов, латиница, цифры, _'; return; }
+  if (u.includes('@')) {
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(u)) { errEl.textContent = 'Некорректный email'; return; }
+  } else if (!/^[a-z0-9_]{3,20}$/.test(u)) {
+    errEl.textContent = 'Логин: 3-20 символов, латиница, цифры, _'; return;
+  }
   if (p.length < 6) { errEl.textContent = 'Пароль: минимум 6 символов'; return; }
   if (authMode === 'register' && p !== document.getElementById('auPass2').value) { errEl.textContent = 'Пароли не совпадают'; return; }
   const btn = document.getElementById('auBtn'); btn.disabled = true; btn.textContent = '...';
