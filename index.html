@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-title" content="Gym" />
 <title>Gym Plan</title>
 <link rel="manifest" href="manifest.json" />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
 <style>
 :root {
   --bg: #f2f3f7;
@@ -41,7 +43,7 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
   min-height: 100dvh;
   overscroll-behavior: none;
 }
@@ -146,6 +148,7 @@ input, select, textarea { font-family: inherit; color: var(--text); }
 .ex-card.ss { border-left: 4px solid var(--purple); }
 .ss-label { font-size: 10px; font-weight: 800; color: var(--purple); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
 .ex-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.ex-photo { width: 100%; height: 150px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; background: var(--card2); display: block; }
 .ex-title { font-size: 15px; font-weight: 700; color: var(--accent); cursor: pointer; line-height: 1.3; }
 .ex-note-txt { font-size: 12px; color: var(--muted); margin-top: 3px; white-space: pre-wrap; }
 .set-grid { display: grid; grid-template-columns: 40px 1fr 62px 56px 40px; gap: 6px; align-items: center; margin-top: 10px; }
@@ -302,7 +305,7 @@ svg.chart { width: 100%; height: auto; display: block; }
 
 /* ---------- SHEETS & MODALS ---------- */
 .overlay {
-  position: fixed; inset: 0; background: rgba(10,14,22,0.5); z-index: 200;
+  position: fixed; inset: 0; background: rgba(10,14,22,0.5); z-index: 300;
   display: none; align-items: flex-end; justify-content: center;
 }
 .overlay.open { display: flex; }
@@ -606,6 +609,54 @@ const LIB=[{i:"lib_barbell_bench_press___medium_grip",en:"Barbell Bench Press - 
 const TEMPLATES=[{ru:"Мой Пн - Грудь/Плечи/Трицепс",en:"My Mon - Chest/Shoulders/Triceps",own:true,items:[["lib_barbell_bench_press___medium_grip",6,6],["lib_dumbbell_flyes",4,15],["lib_cable_crossover",4,15],["lib_side_lateral_raise",4,12],["lib_lying_triceps_press",4,10]]},{ru:"Моя Ср - Спина/Бицепс",en:"My Wed - Back/Biceps",own:true,items:[["lib_barbell_deadlift",4,10],["lib_bent_over_barbell_row",4,10],["lib_pullups",4,10],["lib_wide_grip_lat_pulldown",4,10],["lib_dumbbell_bicep_curl",4,15]]},{ru:"Моя Пт - Ноги",en:"My Fri - Legs",own:true,items:[["lib_barbell_squat",4,12],["lib_romanian_deadlift",4,15],["lib_leg_press",4,15],["lib_leg_extensions",4,12],["lib_standing_calf_raises",4,15]]},{ru:"Full Body (всё тело)",en:"Full Body",own:false,items:[["lib_barbell_squat",3,8],["lib_barbell_bench_press___medium_grip",3,8],["lib_bent_over_barbell_row",3,8],["lib_standing_military_press",3,10],["lib_barbell_curl",3,12],["lib_plank",3,1]]},{ru:"Верх тела (Upper)",en:"Upper Body",own:false,items:[["lib_barbell_bench_press___medium_grip",4,8],["lib_bent_over_barbell_row",4,8],["lib_seated_dumbbell_press",3,10],["lib_wide_grip_lat_pulldown",3,12],["lib_barbell_curl",3,12],["lib_triceps_pushdown",3,12]]},{ru:"Низ тела (Lower)",en:"Lower Body",own:false,items:[["lib_barbell_squat",4,8],["lib_romanian_deadlift",4,10],["lib_leg_press",3,12],["lib_seated_leg_curl",3,12],["lib_standing_calf_raises",4,15],["lib_hanging_leg_raise",3,12]]},{ru:"Жим (Push)",en:"Push",own:false,items:[["lib_barbell_bench_press___medium_grip",4,8],["lib_incline_dumbbell_press",3,10],["lib_standing_military_press",3,10],["lib_side_lateral_raise",3,15],["lib_triceps_pushdown",3,12],["lib_lying_triceps_press",3,10]]},{ru:"Тяга (Pull)",en:"Pull",own:false,items:[["lib_barbell_deadlift",3,6],["lib_pullups",4,8],["lib_bent_over_barbell_row",4,10],["lib_seated_cable_rows",3,12],["lib_barbell_curl",3,12],["lib_hammer_curls",3,12]]},{ru:"Ноги (Legs)",en:"Legs",own:false,items:[["lib_barbell_full_squat",4,8],["lib_romanian_deadlift",4,10],["lib_leg_press",3,12],["lib_leg_extensions",3,15],["lib_lying_leg_curls",3,12],["lib_seated_calf_raise",4,20]]}];
 const LIB_BY_ID = Object.fromEntries(LIB.map(e => [e.i, e]));
 
+// ================== I18N ==================
+const I18N={"Войди в аккаунт - прогресс сохранится на сервере и будет доступен с любого устройства. Достаточно одного входа, дальше вспомнит автоматически.": "Sign in - your progress is saved on the server and available on any device. One sign-in is enough, it remembers you afterwards.", "Supabase не принимает выдуманный домен - войди по настоящему email (например твой gmail)": "Supabase rejects made-up domains - sign in with a real email (e.g. your gmail)", "В Supabase включено подтверждение email - отключи его в настройках (см. инструкцию)": "Email confirmation is enabled in Supabase - turn it off in settings (see the guide)", "Синхронизация выключена: впиши ключи Supabase в index.html, чтобы включить.": "Sync is off: add your Supabase keys in index.html to enable it.", "Тренировка из старой версии приложения - детали подходов не записывались.": "Workout from an older app version - set details were not recorded.", "Нет связи с сервером - проверь интернет и что URL/ключ Supabase верные": "No connection to the server - check your internet and that the Supabase URL/key are correct", "Данные синхронизируются между устройствами. Фото - только локально.": "Data syncs across devices. Photos stay local only.", "Выйти из аккаунта? Данные останутся в этом браузере": "Sign out? Data will stay in this browser", "Удалить программу? История тренировок сохранится.": "Delete this program? Workout history will be kept.", "Заверши тренировку с подходами - график появится.": "Finish a workout with sets - the chart will appear.", "Точно отменить тренировку? Данные не сохранятся.": "Discard this workout? Data will not be saved.", "Выбери шаблон выше или создай программу с нуля.": "Pick a template above or build a program from scratch.", "Ничего не найдено. Создай своё упражнение ниже.": "Nothing found. Create your own exercise below.", "Заменить все текущие данные данными из файла?": "Replace all current data with data from the file?", "Пароль слишком короткий (мин. 6 символов)": "Password is too short (min. 6 characters)", "Сводка: объём, время, рекорды, сравнение": "Summary: volume, time, records, comparison", "Логин: 3-20 символов, латиница, цифры,": "Login: 3-20 chars, latin letters, digits,", "Здесь появятся завершённые тренировки.": "Completed workouts will show up here.", "офлайн - изменения сохранены локально": "offline - changes saved locally", "Связывается с предыдущим упражнением": "Links with the previous exercise", "локальный режим, без синхронизации": "local mode, no sync", "Отменить тренировку без сохранения": "Discard workout without saving", "Записывай мысли, рекорды, технику.": "Jot down thoughts, records, technique.", "Тяга верхнего блока широким хватом": "Wide-Grip Lat Pulldown", "В этом месяце тренировок не было.": "No workouts this month.", "Тяга верхнего блока узким хватом": "Close-Grip Front Lat Pulldown", "Разгибание из-за головы на блоке": "Cable Rope Overhead Triceps Extension", "Записывай вес - появится график": "Log your weight - a chart will appear", "Файл не похож на бэкап Gym Plan": "This file doesn't look like a Gym Plan backup", "Разгибание гантели из-за головы": "Dumbbell One-Arm Triceps Extension", "Ягодичный мостик со штангой (2)": "Barbell Glute Bridge", "Пока пусто. Добавь упражнения.": "Empty for now. Add exercises.", "Удалить тренировку из истории?": "Delete this workout from history?", "Отжимания на брусьях (трицепс)": "Dips - Triceps Version", "Жим штанги на наклонной вниз": "Decline Barbell Bench Press", "Отжимания на брусьях (грудь)": "Dips - Chest Version", "Подъём гантелей на наклонной": "Incline Dumbbell Curl", "Сведение в кроссовере снизу": "Incline Cable Chest Press", "Подъём гантелей перед собой": "Front Dumbbell Raise", "Ягодичный мостик со штангой": "Barbell Hip Thrust", "данные загружены с сервера": "data loaded from server", "офлайн - работаем локально": "offline - working locally", "Пароль: минимум 6 символов": "Password: at least 6 characters", "Нет выполненных упражнений": "No completed exercises", "Резервная копия (без фото)": "Backup (without photos)", "Присед со штангой на спине": "Barbell Squat", "Неверный логин или пароль": "Wrong login or password", "тренировок на этой неделе": "workouts this week", "Не удалось сохранить фото": "Couldn't save the photo", "Жим гантелей на наклонной": "Incline Dumbbell Press", "Подъём гантелей на бицепс": "Dumbbell Bicep Curl", "Сгибания на скамье Скотта": "Preacher Curl", "Начать пустую тренировку": "Start an empty workout", "Повторить эту тренировку": "Repeat this workout", "Сеты по мышцам за неделю": "Sets per muscle / week", "Топ упражнений по объёму": "Top exercises by volume", "Самая тренируемая группа": "Most trained muscle group", "Тяга гантели одной рукой": "One-Arm Dumbbell Row", "Концентрированный подъём": "Concentration Curls", "Молот на блоке с канатом": "Cable Hammer Curls - Rope Attachment", "(меняется в настройках)": "(change it in settings)", "тренировок не записано.": "no workouts recorded.", "чтобы видеть изменения.": "to see the changes.", "Отдых по умолчанию, сек": "Default rest, sec", "Тяга нижнего блока сидя": "Seated Cable Rows", "Подъём штанги на бицепс": "Barbell Curl", "Распределение нагрузки": "Load distribution", "+ Добавить упражнение": "+ Add exercise", "Мои программы-шаблоны": "My program templates", "Суперсет с предыдущим": "Superset with previous", "Удалить последний сет": "Remove last set", "Завершить тренировку?": "Finish the workout?", "только это устройство": "this device only", "Автотаймер после сета": "Auto timer after a set", "Диски (через запятую)": "Plates (comma-separated)", "Сведение в кроссовере": "Cable Crossover", "Тяга штанги в наклоне": "Bent Over Barbell Row", "Приседания со штангой": "Barbell Full Squat", "+ Создать упражнение": "+ Create exercise", "Нет данных за период": "No data for this period", "Количество подходов:": "Number of sets:", "Заметка к упражнению": "Exercise note", "Тренировка сохранена": "Workout saved", "Повторить тренировку": "Repeat workout", "Лучший сет по объёму": "Best set by volume", "Нужно минимум 2 фото": "Need at least 2 photos", "Данные восстановлены": "Data restored", "Французский жим лёжа": "Lying Triceps Press", "Французский жим стоя": "Standing Overhead Barbell Triceps Extension", "Подъём на носки стоя": "Standing Calf Raises", "Подъём на носки сидя": "Seated Calf Raise", "Сведение ног в блоке": "Cable Hip Adduction", "Скручивания на блоке": "Cable Crunch", "Пароли не совпадают": "Passwords don't match", "Программа добавлена": "Program added", "Убрать из суперсета": "Remove from superset", "Название тренировки": "Workout name", "Разминочные подходы": "Warm-up sets", "серия без пропусков": "streak without gaps", "Больше всего сетов:": "Most sets:", "Добавь первое фото,": "Add your first photo,", "Махи в стороны стоя": "Side Lateral Raise", "Разгибание на блоке": "Triceps Pushdown", "Отжимания от скамьи": "Bench Dips", "синхронизировано в": "synced at", "Некорректный email": "Invalid email", "Новый рекорд веса!": "New weight record!", "Удалить упражнение": "Delete exercise", "Любимое упражнение": "Favorite exercise", "Эквивалент объёма:": "Volume equivalent:", "Армейский жим стоя": "Standing Military Press", "Фронтальный присед": "Front Barbell Squat", "Выпады с гантелями": "Dumbbell Lunges", "Удалить программу": "Delete program", "Начать тренировку": "Start workout", "Дай программе имя": "Give the program a name", "Новый 1ПМ рекорд!": "New 1RM record!", "Следующий подход!": "Next set!", "Последние подходы": "Last sets", "к прошлому месяцу": "vs last month", "вес тела за месяц": "body weight / month", "тренировок за год": "workouts this year", "+ Добавить запись": "+ Add entry", "облако (Supabase)": "cloud (Supabase)", "Выйти из аккаунта": "Sign out", "Верх тела (Upper)": "Upper Body", "Жим гантелей лёжа": "Dumbbell Bench Press", "Разводка гантелей": "Dumbbell Flyes", "Жим гантелей сидя": "Seated Dumbbell Press", "Обратная разводка": "Reverse Flyes", "Жим гантелей стоя": "Dumbbell Shoulder Press", "Сгибание ног сидя": "Seated Leg Curl", "Сгибание ног лёжа": "Lying Leg Curls", "Болгарские выпады": "Split Squat with Dumbbells", "Подъём ног в висе": "Hanging Leg Raise", "Выбор упражнения": "Choose exercise", "Низ тела (Lower)": "Lower Body", "синхронизация...": "syncing...", "синхронизировано": "synced", "Целевые повторы:": "Target reps:", "Новое упражнение": "New exercise", "Максимальный вес": "Max weight", "Ещё нет подходов": "No sets yet", "Записей пока нет": "No entries yet", "Жим узким хватом": "Close-Grip Barbell Bench Press", "Ягодичный мостик": "Glute Bridge", "Идёт тренировка": "Workout in progress", "Email или логин": "Email or login", "Создать аккаунт": "Create account", "Новая программа": "New program", "Целевой вес, кг": "Target weight, kg", "Итого на грифе:": "Total on the bar:", "Рабочий вес, кг": "Working weight, kg", "личных рекордов": "personal records", "+ Добавить фото": "+ Add photo", "Удалить запись?": "Delete this entry?", "Удалить заметку": "Delete note", "Импорт завершён": "Import complete", "Жим штанги лёжа": "Barbell Bench Press - Medium Grip", "Жим в тренажёре": "Machine Bench Press", "Отчёт за месяц": "Monthly report", "Повтори пароль": "Repeat password", "Готовые сплиты": "Ready-made splits", "+ Добавить сет": "+ Add set", "RPE: выключить": "RPE: turn off", "поднятый объём": "lifted volume", "новых рекордов": "new records", "+ Записать вес": "+ Log weight", "Фото прогресса": "Progress photos", "Фото добавлено": "Photo added", "Ошибка импорта": "Import error", "Гиперэкстензия": "Hyperextensions (Back Extensions)", "Румынская тяга": "Romanian Deadlift", "Разгибание ног": "Leg Extensions", "Боковая планка": "Side Bridge", "Русский твист": "Russian Twist", "Мои программы": "My programs", "Диски на гриф": "Plates per side", "RPE: включить": "RPE: turn on", "Отдых окончен": "Rest is over", "старый формат": "old format", "Расчётный 1ПМ": "Estimated 1RM", "без изменений": "no change", "рабочих сетов": "working sets", "поднято всего": "total lifted", "лучший месяц:": "best month:", "Синхр. сейчас": "Sync now", "Вес грифа, кг": "Bar weight, kg", "Язык названий": "Language", "Новая заметка": "New note", "Становая тяга": "Barbell Deadlift", "Процент жира": "Body fat %", "длительность": "duration", "без подходов": "no sets", "Год в цифрах": "Year in numbers", "Фокус месяца": "Focus of the month", "часов в зале": "hours in the gym", "Удалить фото": "Delete photo", "Пользователь": "User", "Подтягивания": "Pullups", "Жим Арнольда": "Arnold Dumbbell Press", "Регистрация": "Sign up", "Скручивания": "Crunches", "Тяга (Pull)": "Pull", "Ноги (Legs)": "Legs", "+ Программа": "+ Program", "Дублировать": "Duplicate", "Группа мышц": "Muscle group", "Как прошло?": "How did it go?", "кг · диски:": "kg · plates:", "На сторону:": "Per side:", "Только гриф": "Bar only", "Пустой гриф": "Empty bar", "Постоянство": "Consistency", "сетов · был": "sets · was", "сетов всего": "sets total", "общее время": "total time", "Замеры тела": "Body measurements", "Загрузка...": "Loading...", "Новый замер": "New measurement", "Нет записей": "No entries", "Тёмная тема": "Dark theme", "Тяга к лицу": "Face Pull", "Тренировка": "Workout", "Упражнения": "Exercises", "Упражнение": "Exercise", "Итоги года": "Year in review", "Жим (Push)": "Push", "упражнений": "exercises", "без цели):": "no target):", "тренировок": "workouts", "нет данных": "no data", "До / После": "Before / After", "Жим ногами": "Leg Press", "Программа": "Program", "Сохранить": "Save", "+ Заметка": "+ Note", "Убрать СС": "Remove SS", "Завершить": "Finish", "Всё время": "All time", "Настройки": "Settings", "Заголовок": "Title", "Отжимания": "Pushups", "Велосипед": "Air Bike", "Прогресс": "Progress", "Поиск...": "Search...", "Название": "Name", "Вес тела": "Body weight", "ожидание": "waiting", "подходов": "sets", "Суперсет": "Superset", "Разминка": "Warm-up", "Заметка:": "Note:", "Дроп-сет": "Drop set", "Макс вес": "Max weight", "разминка": "warm-up", "кг всего": "kg total", "Параметр": "Metric", "Значение": "Value", "История": "History", "Заметка": "Note", "Трицепс": "Triceps", "Ягодицы": "Glutes", "+ Замер": "+ Measure", "(копия)": "(copy)", "Рабочий": "Working", "Удалить": "Delete", "30 дней": "30 days", "90 дней": "90 days", "Повторы": "Reps", "Рекорды": "Records", "Закрыть": "Close", "Аккаунт": "Account", "Заметки": "Notes", "Русский": "Russian", "Экспорт": "Export", "Пароль": "Password", "Планка": "Plank", "Бицепс": "Biceps", "Кардио": "Cardio", "Другое": "Other", "упр. ·": "ex. ·", "Отмена": "Cancel", "Готово": "Done", "Отчёты": "Reports", "слонов": "elephants", "Ошибка": "Error", "Статус": "Status", "Данные": "Data", "Импорт": "Import", "Т-тяга": "T-Bar Row with Handle", "отдых": "rest", "Замер": "Measure", "Войти": "Sign in", "Молот": "Hammer Curls", "Грудь": "Chest", "Спина": "Back", "Плечи": "Shoulders", "Пресс": "Abs", "Талия": "Waist", "Бедро": "Thigh", "Сеты:": "Sets:", "Объём": "Volume", "повт.": "reps", "Пред.": "Prev.", "объём": "volume", "(цель": "(target", "время": "time", "сетов": "sets", "Отказ": "Failure", "отказ": "failure", "Режим": "Mode", "Текст": "Text", "Тело": "Body", "Вход": "Sign in", "Ноги": "Legs", "Икра": "Calf", "ПРЕД": "PREV", "Цель": "Target", "Сеты": "Sets", "Повт": "Reps", "Гриф": "Bar", "упр.": "ex.", "нед.": "wk", "дроп": "drop", "Дата": "Date", "Ещё": "More", "Таз": "Hips", "Шея": "Neck", "мин": "min", "МОЯ": "MINE", "Все": "All", "Сет": "Set", "Год": "Year", "Кг": "Kg", "За": "For"};
+const I18N_KEYS=["Войди в аккаунт - прогресс сохранится на сервере и будет доступен с любого устройства. Достаточно одного входа, дальше вспомнит автоматически.", "Supabase не принимает выдуманный домен - войди по настоящему email (например твой gmail)", "В Supabase включено подтверждение email - отключи его в настройках (см. инструкцию)", "Синхронизация выключена: впиши ключи Supabase в index.html, чтобы включить.", "Тренировка из старой версии приложения - детали подходов не записывались.", "Нет связи с сервером - проверь интернет и что URL/ключ Supabase верные", "Данные синхронизируются между устройствами. Фото - только локально.", "Выйти из аккаунта? Данные останутся в этом браузере", "Удалить программу? История тренировок сохранится.", "Заверши тренировку с подходами - график появится.", "Точно отменить тренировку? Данные не сохранятся.", "Выбери шаблон выше или создай программу с нуля.", "Ничего не найдено. Создай своё упражнение ниже.", "Заменить все текущие данные данными из файла?", "Пароль слишком короткий (мин. 6 символов)", "Сводка: объём, время, рекорды, сравнение", "Логин: 3-20 символов, латиница, цифры,", "Здесь появятся завершённые тренировки.", "офлайн - изменения сохранены локально", "Связывается с предыдущим упражнением", "локальный режим, без синхронизации", "Отменить тренировку без сохранения", "Записывай мысли, рекорды, технику.", "Тяга верхнего блока широким хватом", "В этом месяце тренировок не было.", "Тяга верхнего блока узким хватом", "Разгибание из-за головы на блоке", "Записывай вес - появится график", "Файл не похож на бэкап Gym Plan", "Разгибание гантели из-за головы", "Ягодичный мостик со штангой (2)", "Пока пусто. Добавь упражнения.", "Удалить тренировку из истории?", "Отжимания на брусьях (трицепс)", "Жим штанги на наклонной вниз", "Отжимания на брусьях (грудь)", "Подъём гантелей на наклонной", "Сведение в кроссовере снизу", "Подъём гантелей перед собой", "Ягодичный мостик со штангой", "данные загружены с сервера", "офлайн - работаем локально", "Пароль: минимум 6 символов", "Нет выполненных упражнений", "Резервная копия (без фото)", "Присед со штангой на спине", "Неверный логин или пароль", "тренировок на этой неделе", "Не удалось сохранить фото", "Жим гантелей на наклонной", "Подъём гантелей на бицепс", "Сгибания на скамье Скотта", "Начать пустую тренировку", "Повторить эту тренировку", "Сеты по мышцам за неделю", "Топ упражнений по объёму", "Самая тренируемая группа", "Тяга гантели одной рукой", "Концентрированный подъём", "Молот на блоке с канатом", "(меняется в настройках)", "тренировок не записано.", "чтобы видеть изменения.", "Отдых по умолчанию, сек", "Тяга нижнего блока сидя", "Подъём штанги на бицепс", "Распределение нагрузки", "+ Добавить упражнение", "Мои программы-шаблоны", "Суперсет с предыдущим", "Удалить последний сет", "Завершить тренировку?", "только это устройство", "Автотаймер после сета", "Диски (через запятую)", "Сведение в кроссовере", "Тяга штанги в наклоне", "Приседания со штангой", "+ Создать упражнение", "Нет данных за период", "Количество подходов:", "Заметка к упражнению", "Тренировка сохранена", "Повторить тренировку", "Лучший сет по объёму", "Нужно минимум 2 фото", "Данные восстановлены", "Французский жим лёжа", "Французский жим стоя", "Подъём на носки стоя", "Подъём на носки сидя", "Сведение ног в блоке", "Скручивания на блоке", "Пароли не совпадают", "Программа добавлена", "Убрать из суперсета", "Название тренировки", "Разминочные подходы", "серия без пропусков", "Больше всего сетов:", "Добавь первое фото,", "Махи в стороны стоя", "Разгибание на блоке", "Отжимания от скамьи", "синхронизировано в", "Некорректный email", "Новый рекорд веса!", "Удалить упражнение", "Любимое упражнение", "Эквивалент объёма:", "Армейский жим стоя", "Фронтальный присед", "Выпады с гантелями", "Удалить программу", "Начать тренировку", "Дай программе имя", "Новый 1ПМ рекорд!", "Следующий подход!", "Последние подходы", "к прошлому месяцу", "вес тела за месяц", "тренировок за год", "+ Добавить запись", "облако (Supabase)", "Выйти из аккаунта", "Верх тела (Upper)", "Жим гантелей лёжа", "Разводка гантелей", "Жим гантелей сидя", "Обратная разводка", "Жим гантелей стоя", "Сгибание ног сидя", "Сгибание ног лёжа", "Болгарские выпады", "Подъём ног в висе", "Выбор упражнения", "Низ тела (Lower)", "синхронизация...", "синхронизировано", "Целевые повторы:", "Новое упражнение", "Максимальный вес", "Ещё нет подходов", "Записей пока нет", "Жим узким хватом", "Ягодичный мостик", "Идёт тренировка", "Email или логин", "Создать аккаунт", "Новая программа", "Целевой вес, кг", "Итого на грифе:", "Рабочий вес, кг", "личных рекордов", "+ Добавить фото", "Удалить запись?", "Удалить заметку", "Импорт завершён", "Жим штанги лёжа", "Жим в тренажёре", "Отчёт за месяц", "Повтори пароль", "Готовые сплиты", "+ Добавить сет", "RPE: выключить", "поднятый объём", "новых рекордов", "+ Записать вес", "Фото прогресса", "Фото добавлено", "Ошибка импорта", "Гиперэкстензия", "Румынская тяга", "Разгибание ног", "Боковая планка", "Русский твист", "Мои программы", "Диски на гриф", "RPE: включить", "Отдых окончен", "старый формат", "Расчётный 1ПМ", "без изменений", "рабочих сетов", "поднято всего", "лучший месяц:", "Синхр. сейчас", "Вес грифа, кг", "Язык названий", "Новая заметка", "Становая тяга", "Процент жира", "длительность", "без подходов", "Год в цифрах", "Фокус месяца", "часов в зале", "Удалить фото", "Пользователь", "Подтягивания", "Жим Арнольда", "Регистрация", "Скручивания", "Тяга (Pull)", "Ноги (Legs)", "+ Программа", "Дублировать", "Группа мышц", "Как прошло?", "кг · диски:", "На сторону:", "Только гриф", "Пустой гриф", "Постоянство", "сетов · был", "сетов всего", "общее время", "Замеры тела", "Загрузка...", "Новый замер", "Нет записей", "Тёмная тема", "Тяга к лицу", "Тренировка", "Упражнения", "Упражнение", "Итоги года", "Жим (Push)", "упражнений", "без цели):", "тренировок", "нет данных", "До / После", "Жим ногами", "Программа", "Сохранить", "+ Заметка", "Убрать СС", "Завершить", "Всё время", "Настройки", "Заголовок", "Отжимания", "Велосипед", "Прогресс", "Поиск...", "Название", "Вес тела", "ожидание", "подходов", "Суперсет", "Разминка", "Заметка:", "Дроп-сет", "Макс вес", "разминка", "кг всего", "Параметр", "Значение", "История", "Заметка", "Трицепс", "Ягодицы", "+ Замер", "(копия)", "Рабочий", "Удалить", "30 дней", "90 дней", "Повторы", "Рекорды", "Закрыть", "Аккаунт", "Заметки", "Русский", "Экспорт", "Пароль", "Планка", "Бицепс", "Кардио", "Другое", "упр. ·", "Отмена", "Готово", "Отчёты", "слонов", "Ошибка", "Статус", "Данные", "Импорт", "Т-тяга", "отдых", "Замер", "Войти", "Молот", "Грудь", "Спина", "Плечи", "Пресс", "Талия", "Бедро", "Сеты:", "Объём", "повт.", "Пред.", "объём", "(цель", "время", "сетов", "Отказ", "отказ", "Режим", "Текст", "Тело", "Вход", "Ноги", "Икра", "ПРЕД", "Цель", "Сеты", "Повт", "Гриф", "упр.", "нед.", "дроп", "Дата", "Ещё", "Таз", "Шея", "мин", "МОЯ", "Все", "Сет", "Год", "Кг", "За"];
+function LANG() { try { return (state && state.settings && state.settings.lang) || 'en'; } catch (e) { return 'en'; } }
+function tr1(s) { return I18N[s] || s; }
+// перевод отрендеренного HTML-фрагмента (для innerHTML-строк)
+function trHTML(html) {
+  if (LANG() !== 'en') return html;
+  for (const k of I18N_KEYS) { if (html.indexOf(k) !== -1) html = html.split(k).join(I18N[k]); }
+  return html;
+}
+// живой перевод DOM: текстовые узлы + placeholder/title, кроме значений инпутов
+let _langObserver = null, _langScheduled = false;
+function translateNode(root) {
+  if (LANG() !== 'en') return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+  const texts = [];
+  let n; while ((n = walker.nextNode())) texts.push(n);
+  texts.forEach(t => {
+    const v = t.nodeValue;
+    if (!v || !/[а-яА-ЯёЁ]/.test(v)) return;
+    let out = v;
+    for (const k of I18N_KEYS) { if (out.indexOf(k) !== -1) out = out.split(k).join(I18N[k]); }
+    if (out !== v) t.nodeValue = out;
+  });
+  root.querySelectorAll('[placeholder]').forEach(el => {
+    const v = el.getAttribute('placeholder');
+    if (v && /[а-яА-ЯёЁ]/.test(v) && I18N[v]) el.setAttribute('placeholder', I18N[v]);
+  });
+}
+function applyLang() {
+  document.documentElement.lang = LANG();
+  if (LANG() === 'en') translateNode(document.body);
+  startLangObserver();
+}
+function startLangObserver() {
+  if (_langObserver || LANG() !== 'en') return;
+  _langObserver = new MutationObserver(() => {
+    if (_langScheduled) return;
+    _langScheduled = true;
+    const raf = (typeof requestAnimationFrame === 'function') ? requestAnimationFrame : (cb => setTimeout(cb, 16));
+    raf(() => { _langScheduled = false; translateNode(document.body); });
+  });
+  _langObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+}
+function stopLangObserver() { if (_langObserver) { _langObserver.disconnect(); _langObserver = null; } }
+
+
 // ================== CONSTANTS ==================
 const MUSCLES = {
   chest:    ['Грудь',   '#3b82f6'],
@@ -642,7 +693,7 @@ function freshState() {
     workouts: [],
     body: Object.fromEntries(Object.keys(METRICS).map(k => [k, []])),
     notes: [],
-    settings: { restSec: 90, autoRest: true, barKg: 20, plates: [25,20,15,10,5,2.5,1.25], theme: 'light', exLang: 'en' }
+    settings: { restSec: 90, autoRest: true, barKg: 20, plates: [25,20,15,10,5,2.5,1.25], theme: 'light', lang: 'en' }
   };
 }
 
@@ -908,7 +959,7 @@ function num(v) { const n = parseFloat(String(v).replace(',', '.')); return isNa
 function exById(id) { return state.exercises.find(e => e.id === id); }
 function exName(ex) {
   if (!ex) return '?';
-  if (ex.en || ex.ru) return (state.settings.exLang === 'ru' && ex.ru) ? ex.ru : (ex.en || ex.ru);
+  if (ex.en || ex.ru) return (LANG() === 'ru' && ex.ru) ? ex.ru : (ex.en || ex.ru);
   return ex.name || '?';
 }
 // найти/создать упражнение каталога из библиотеки
@@ -1138,7 +1189,7 @@ function renderView(view) {
 }
 function renderTopActions() {
   const el = document.getElementById('topActions');
-  if (currentView === 'start' && !active) el.innerHTML = `<button class="chip-btn" onclick="openRoutineEditor(null)">+ Программа</button>`;
+  if (currentView === 'start' && !active) el.innerHTML = `<button class="chip-btn" onclick="openNewRoutineChooser()">+ Программа</button>`;
   else if (currentView === 'body') el.innerHTML = `<button class="chip-btn" onclick="openMeasLog()">+ Замер</button>`;
   else if (currentView === 'more') el.innerHTML = `<button class="chip-btn" onclick="openNoteForm(null)">+ Заметка</button>`;
   else el.innerHTML = '';
@@ -1158,22 +1209,8 @@ function renderStart() {
 
   let html = `<button class="big-btn" style="margin-top:8px;" onclick="startEmpty()">▶ Начать пустую тренировку</button>`;
 
-  // готовые шаблоны
-  const ru = state.settings.exLang === 'ru';
-  const own = TEMPLATES.filter(t => t.own), common = TEMPLATES.filter(t => !t.own);
-  const tplCard = (t, i, arr) => {
-    const gi = arr === own ? i : own.length + i;
-    return `<div class="tpl-card${t.own ? ' own' : ''}" onclick="addTemplate(${gi})">
-      ${t.own ? '<div class="tpl-badge">МОЯ</div>' : ''}
-      <div class="tpl-name">${esc(ru ? t.ru : t.en)}</div>
-      <div class="tpl-sub">${t.items.length} упражнений</div>
-    </div>`;
-  };
-  html += `<div class="sec-title">Мои программы-шаблоны</div><div class="tpl-scroll">${own.map((t,i)=>tplCard(t,i,own)).join('')}</div>`;
-  html += `<div class="sec-title">Готовые сплиты</div><div class="tpl-scroll">${common.map((t,i)=>tplCard(t,i,common)).join('')}</div>`;
-
   if (!state.routines.length) {
-    html += `<div class="empty"><div class="e-ico">📋</div>Выбери шаблон выше или создай программу с нуля.</div>`;
+    html += `<div class="empty"><div class="e-ico">📋</div>Нажми "+ Программа" - выбери готовый шаблон или создай с нуля.</div>`;
   } else {
     html += `<div class="sec-title">Мои программы</div>`;
     html += state.routines.map(r => {
@@ -1192,19 +1229,43 @@ function renderStart() {
   el.innerHTML = html;
 }
 
-function addTemplate(gi) {
+function templateToRoutine(gi) {
   const t = TEMPLATES[gi];
-  if (!t) return;
-  const ru = state.settings.exLang === 'ru';
+  if (!t) return null;
+  const ru = LANG() === 'ru';
   const items = t.items.map(([libId, sets, reps]) => {
     const exId = libEnsure(libId);
     return { id: uid(), exId, sets: Array.from({ length: sets }, () => ({ kg: '', reps: String(reps), rpe: '', done: false })) };
   });
-  const r = { id: uid(), name: ru ? t.ru : t.en, note: '', items };
-  state.routines.push(r);
+  return { id: uid(), name: ru ? t.ru : t.en, note: '', items };
+}
+// выбор способа создания программы: шаблоны или с нуля
+function openNewRoutineChooser() {
+  const ru = LANG() === 'ru';
+  const own = TEMPLATES.filter(t => t.own), common = TEMPLATES.filter(t => !t.own);
+  const card = (t) => {
+    const gi = TEMPLATES.indexOf(t);
+    return `<div class="tpl-card${t.own ? ' own' : ''}" onclick="pickTemplate(${gi})">
+      ${t.own ? '<div class="tpl-badge">МОЯ</div>' : ''}
+      <div class="tpl-name">${esc(ru ? t.ru : t.en)}</div>
+      <div class="tpl-sub">${t.items.length} упражнений</div>
+    </div>`;
+  };
+  sheet(`
+    <div class="sheet-title">Новая программа</div>
+    <button class="big-btn" style="margin:0 0 14px;" onclick="closeSheet(); openRoutineEditor(null)">Создать с нуля</button>
+    <div class="sec-title" style="margin-top:0;">Мои программы-шаблоны</div>
+    <div class="tpl-scroll">${own.map(card).join('')}</div>
+    <div class="sec-title">Готовые сплиты</div>
+    <div class="tpl-scroll">${common.map(card).join('')}</div>
+  `);
+}
+function pickTemplate(gi) {
+  closeSheet();
+  const r = templateToRoutine(gi);
+  if (!r) return;
   save();
-  renderStart();
-  toast('✅', 'Программа добавлена', ru ? t.ru : t.en);
+  openRoutineEditorFrom(r);
 }
 
 // ================== ROUTINE EDITOR ==================
@@ -1334,7 +1395,7 @@ function renderPickerMuscles() {
 }
 function renderPicker() {
   const q = document.getElementById('pickSearch').value.trim().toLowerCase();
-  const ru = state.settings.exLang === 'ru';
+  const ru = LANG() === 'ru';
   // пользовательские упражнения (не из библиотеки), чтобы не дублировать каталог
   const custom = state.exercises.filter(e => !e.libId);
   let rows = [];
@@ -1398,6 +1459,20 @@ function sheetForm(title, bodyHtml, onOk, okLabel = 'Сохранить') {
   document.getElementById('ovForm').classList.add('open');
 }
 function closeSheet() { document.getElementById('ovForm').classList.remove('open'); sheetOk = null; }
+function sheet(html) {
+  document.getElementById('ovFormSheet').innerHTML = `<div class="sheet-handle"></div>` + html;
+  document.getElementById('ovForm').classList.add('open');
+}
+function openRoutineEditorFrom(r) {
+  editRoutine = r;
+  editRoutine._isNew = true;
+  document.getElementById('reTitle').textContent = 'Новая программа';
+  document.getElementById('reName').value = editRoutine.name;
+  document.getElementById('reNote').value = editRoutine.note || '';
+  document.getElementById('reDelete').style.display = 'none';
+  renderRoutineItems();
+  openPage('pgRoutine');
+}
 
 // ================== LIVE WORKOUT ==================
 let liveTick = null;
@@ -1494,6 +1569,7 @@ function liveExCard(en, i) {
   }).join('');
   return `<div class="ex-card${en.superset != null ? ' ss' : ''}">
     ${en.superset != null ? '<div class="ss-label">Суперсет</div>' : ''}
+    ${ex.img ? `<img class="ex-photo" loading="lazy" src="${ex.img}" onerror="this.style.display='none'"/>` : ''}
     <div class="ex-head">
       <div style="min-width:0;">
         <div class="ex-title" onclick="openExDetail('${en.exId}')">${esc(exNm)}</div>
@@ -2304,10 +2380,10 @@ function renderMore() {
     <div class="sec-title">Данные</div>
     <div class="sec-title">Упражнения</div>
     <div class="card">
-      <div class="set-row2"><span>Язык названий</span>
+      <div class="set-row2"><span>Язык · Language</span>
         <div style="display:flex;gap:8px;">
-          <button class="chip-btn${s.exLang==='en'?' on':''}" onclick="setExLang('en')">English</button>
-          <button class="chip-btn${s.exLang==='ru'?' on':''}" onclick="setExLang('ru')">Русский</button>
+          <button class="chip-btn${s.lang==='en'?' on':''}" onclick="setLang('en')">English</button>
+          <button class="chip-btn${s.lang==='ru'?' on':''}" onclick="setLang('ru')">Русский</button>
         </div>
       </div>
     </div>
@@ -2324,7 +2400,7 @@ function renderMore() {
   `;
 }
 function setSetting(k, v) { state.settings[k] = v; save(); }
-function setExLang(l) { state.settings.exLang = l; save(); renderMore(); renderStart(); }
+function setLang(l) { const prev = state.settings.lang; state.settings.lang = l; save(); if (l !== 'en') { stopLangObserver(); location.reload(); return; } applyLang(); renderMore(); renderStart(); }
 function setPlates(v) {
   const arr = v.split(',').map(x => num(x)).filter(x => x > 0);
   if (arr.length) { state.settings.plates = arr; save(); }
@@ -2395,6 +2471,7 @@ function importData(input) {
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
 function initApp() {
   applyTheme();
+  applyLang();
   renderStart();
   renderTopActions();
   renderResumeBanner();
