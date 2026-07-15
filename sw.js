@@ -1,4 +1,4 @@
-const CACHE = 'gymplan-v3-auth';
+const CACHE = 'gymplan-v3-lib';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {
