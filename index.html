@@ -343,6 +343,16 @@ textarea.f-input { min-height: 84px; resize: vertical; }
 .pick-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 2px; border-bottom: 1px solid var(--border); cursor: pointer; }
 .pick-row:last-child { border-bottom: none; }
 .pick-name { font-size: 14px; font-weight: 600; }
+.pick-row .pick-l { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.pick-thumb { width: 44px; height: 44px; border-radius: 9px; object-fit: cover; background: var(--border); flex-shrink: 0; }
+.pick-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.tpl-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 2px 0 6px; scrollbar-width: none; }
+.tpl-scroll::-webkit-scrollbar { display: none; }
+.tpl-card { flex: 0 0 auto; width: 150px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; cursor: pointer; }
+.tpl-card.own { border-color: var(--accent); }
+.tpl-name { font-size: 13px; font-weight: 700; line-height: 1.25; margin-bottom: 4px; }
+.tpl-sub { font-size: 11px; color: var(--muted); }
+.tpl-badge { display: inline-block; font-size: 9px; font-weight: 700; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 1px 5px; margin-bottom: 6px; }
 .pick-muscle { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; color: #fff; flex-shrink: 0; }
 .mus-filter { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px; scrollbar-width: none; }
 .mus-filter::-webkit-scrollbar { display: none; }
@@ -591,6 +601,11 @@ textarea.f-input { min-height: 84px; resize: vertical; }
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ================== EXERCISE LIBRARY + TEMPLATES ==================
+const LIB=[{i:"lib_barbell_bench_press___medium_grip",en:"Barbell Bench Press - Medium Grip",ru:"Жим штанги лёжа",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg"},{i:"lib_incline_dumbbell_press",en:"Incline Dumbbell Press",ru:"Жим гантелей на наклонной",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Dumbbell_Press/0.jpg"},{i:"lib_dumbbell_bench_press",en:"Dumbbell Bench Press",ru:"Жим гантелей лёжа",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bench_Press/0.jpg"},{i:"lib_dumbbell_flyes",en:"Dumbbell Flyes",ru:"Разводка гантелей",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Flyes/0.jpg"},{i:"lib_cable_crossover",en:"Cable Crossover",ru:"Сведение в кроссовере",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Crossover/0.jpg"},{i:"lib_machine_bench_press",en:"Machine Bench Press",ru:"Жим в тренажёре",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Machine_Bench_Press/0.jpg"},{i:"lib_pushups",en:"Pushups",ru:"Отжимания",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pushups/0.jpg"},{i:"lib_decline_barbell_bench_press",en:"Decline Barbell Bench Press",ru:"Жим штанги на наклонной вниз",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Barbell_Bench_Press/0.jpg"},{i:"lib_incline_cable_chest_press",en:"Incline Cable Chest Press",ru:"Сведение в кроссовере снизу",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Cable_Chest_Press/0.jpg"},{i:"lib_dips___chest_version",en:"Dips - Chest Version",ru:"Отжимания на брусьях (грудь)",m:"chest",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Chest_Version/0.jpg"},{i:"lib_barbell_deadlift",en:"Barbell Deadlift",ru:"Становая тяга",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Deadlift/0.jpg"},{i:"lib_bent_over_barbell_row",en:"Bent Over Barbell Row",ru:"Тяга штанги в наклоне",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Barbell_Row/0.jpg"},{i:"lib_pullups",en:"Pullups",ru:"Подтягивания",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pullups/0.jpg"},{i:"lib_wide_grip_lat_pulldown",en:"Wide-Grip Lat Pulldown",ru:"Тяга верхнего блока широким хватом",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Lat_Pulldown/0.jpg"},{i:"lib_seated_cable_rows",en:"Seated Cable Rows",ru:"Тяга нижнего блока сидя",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Cable_Rows/0.jpg"},{i:"lib_one_arm_dumbbell_row",en:"One-Arm Dumbbell Row",ru:"Тяга гантели одной рукой",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/0.jpg"},{i:"lib_t_bar_row_with_handle",en:"T-Bar Row with Handle",ru:"Т-тяга",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/T-Bar_Row_with_Handle/0.jpg"},{i:"lib_hyperextensions__back_extensions_",en:"Hyperextensions (Back Extensions)",ru:"Гиперэкстензия",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hyperextensions_Back_Extensions/0.jpg"},{i:"lib_close_grip_front_lat_pulldown",en:"Close-Grip Front Lat Pulldown",ru:"Тяга верхнего блока узким хватом",m:"back",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Front_Lat_Pulldown/0.jpg"},{i:"lib_standing_military_press",en:"Standing Military Press",ru:"Армейский жим стоя",m:"shoulders",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Military_Press/0.jpg"},{i:"lib_seated_dumbbell_press",en:"Seated Dumbbell Press",ru:"Жим гантелей сидя",m:"shoulders",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Dumbbell_Press/0.jpg"},{i:"lib_side_lateral_raise",en:"Side Lateral Raise",ru:"Махи в стороны стоя",m:"shoulders",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Lateral_Raise/0.jpg"},{i:"lib_front_dumbbell_raise",en:"Front Dumbbell Raise",ru:"Подъём гантелей перед собой",m:"shoulders",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Dumbbell_Raise/0.jpg"},{i:"lib_arnold_dumbbell_press",en:"Arnold Dumbbell Press",ru:"Жим Арнольда",m:"shoulders",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Arnold_Dumbbell_Press/0.jpg"},{i:"lib_reverse_flyes",en:"Reverse Flyes",ru:"Обратная разводка",m:"shoulders",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Reverse_Flyes/0.jpg"},{i:"lib_face_pull",en:"Face Pull",ru:"Тяга к лицу",m:"shoulders",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Face_Pull/0.jpg"},{i:"lib_dumbbell_shoulder_press",en:"Dumbbell Shoulder Press",ru:"Жим гантелей стоя",m:"shoulders",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Shoulder_Press/0.jpg"},{i:"lib_barbell_curl",en:"Barbell Curl",ru:"Подъём штанги на бицепс",m:"biceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Curl/0.jpg"},{i:"lib_dumbbell_bicep_curl",en:"Dumbbell Bicep Curl",ru:"Подъём гантелей на бицепс",m:"biceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bicep_Curl/0.jpg"},{i:"lib_hammer_curls",en:"Hammer Curls",ru:"Молот",m:"biceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Curls/0.jpg"},{i:"lib_preacher_curl",en:"Preacher Curl",ru:"Сгибания на скамье Скотта",m:"biceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Preacher_Curl/0.jpg"},{i:"lib_concentration_curls",en:"Concentration Curls",ru:"Концентрированный подъём",m:"biceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Concentration_Curls/0.jpg"},{i:"lib_cable_hammer_curls___rope_attachment",en:"Cable Hammer Curls - Rope Attachment",ru:"Молот на блоке с канатом",m:"biceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Hammer_Curls_-_Rope_Attachment/0.jpg"},{i:"lib_incline_dumbbell_curl",en:"Incline Dumbbell Curl",ru:"Подъём гантелей на наклонной",m:"biceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Dumbbell_Curl/0.jpg"},{i:"lib_triceps_pushdown",en:"Triceps Pushdown",ru:"Разгибание на блоке",m:"triceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown/0.jpg"},{i:"lib_close_grip_barbell_bench_press",en:"Close-Grip Barbell Bench Press",ru:"Жим узким хватом",m:"triceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Close-Grip_Barbell_Bench_Press/0.jpg"},{i:"lib_lying_triceps_press",en:"Lying Triceps Press",ru:"Французский жим лёжа",m:"triceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Triceps_Press/0.jpg"},{i:"lib_dips___triceps_version",en:"Dips - Triceps Version",ru:"Отжимания на брусьях (трицепс)",m:"triceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Triceps_Version/0.jpg"},{i:"lib_standing_overhead_barbell_triceps_extens",en:"Standing Overhead Barbell Triceps Extension",ru:"Французский жим стоя",m:"triceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Overhead_Barbell_Triceps_Extension/0.jpg"},{i:"lib_cable_rope_overhead_triceps_extension",en:"Cable Rope Overhead Triceps Extension",ru:"Разгибание из-за головы на блоке",m:"triceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Rope_Overhead_Triceps_Extension/0.jpg"},{i:"lib_bench_dips",en:"Bench Dips",ru:"Отжимания от скамьи",m:"triceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bench_Dips/0.jpg"},{i:"lib_dumbbell_one_arm_triceps_extension",en:"Dumbbell One-Arm Triceps Extension",ru:"Разгибание гантели из-за головы",m:"triceps",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_One-Arm_Triceps_Extension/0.jpg"},{i:"lib_barbell_full_squat",en:"Barbell Full Squat",ru:"Приседания со штангой",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Full_Squat/0.jpg"},{i:"lib_barbell_squat",en:"Barbell Squat",ru:"Присед со штангой на спине",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Squat/0.jpg"},{i:"lib_leg_press",en:"Leg Press",ru:"Жим ногами",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Press/0.jpg"},{i:"lib_romanian_deadlift",en:"Romanian Deadlift",ru:"Румынская тяга",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift/0.jpg"},{i:"lib_leg_extensions",en:"Leg Extensions",ru:"Разгибание ног",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Extensions/0.jpg"},{i:"lib_seated_leg_curl",en:"Seated Leg Curl",ru:"Сгибание ног сидя",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Leg_Curl/0.jpg"},{i:"lib_lying_leg_curls",en:"Lying Leg Curls",ru:"Сгибание ног лёжа",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Leg_Curls/0.jpg"},{i:"lib_standing_calf_raises",en:"Standing Calf Raises",ru:"Подъём на носки стоя",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Calf_Raises/0.jpg"},{i:"lib_seated_calf_raise",en:"Seated Calf Raise",ru:"Подъём на носки сидя",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Calf_Raise/0.jpg"},{i:"lib_front_barbell_squat",en:"Front Barbell Squat",ru:"Фронтальный присед",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Front_Barbell_Squat/0.jpg"},{i:"lib_split_squat_with_dumbbells",en:"Split Squat with Dumbbells",ru:"Болгарские выпады",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squat_with_Dumbbells/0.jpg"},{i:"lib_dumbbell_lunges",en:"Dumbbell Lunges",ru:"Выпады с гантелями",m:"legs",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lunges/0.jpg"},{i:"lib_barbell_hip_thrust",en:"Barbell Hip Thrust",ru:"Ягодичный мостик со штангой",m:"glutes",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Hip_Thrust/0.jpg"},{i:"lib_barbell_glute_bridge",en:"Barbell Glute Bridge",ru:"Ягодичный мостик",m:"glutes",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Glute_Bridge/0.jpg"},{i:"lib_cable_hip_adduction",en:"Cable Hip Adduction",ru:"Сведение ног в блоке",m:"glutes",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Hip_Adduction/0.jpg"},{i:"lib_plank",en:"Plank",ru:"Планка",m:"core",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/0.jpg"},{i:"lib_hanging_leg_raise",en:"Hanging Leg Raise",ru:"Подъём ног в висе",m:"core",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hanging_Leg_Raise/0.jpg"},{i:"lib_crunches",en:"Crunches",ru:"Скручивания",m:"core",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Crunches/0.jpg"},{i:"lib_cable_crunch",en:"Cable Crunch",ru:"Скручивания на блоке",m:"core",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Cable_Crunch/0.jpg"},{i:"lib_russian_twist",en:"Russian Twist",ru:"Русский твист",m:"core",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Russian_Twist/0.jpg"},{i:"lib_side_bridge",en:"Side Bridge",ru:"Боковая планка",m:"core",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Bridge/0.jpg"},{i:"lib_air_bike",en:"Air Bike",ru:"Велосипед",m:"core",img:"https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Air_Bike/0.jpg"}];
+const TEMPLATES=[{ru:"Мой Пн - Грудь/Плечи/Трицепс",en:"My Mon - Chest/Shoulders/Triceps",own:true,items:[["lib_barbell_bench_press___medium_grip",6,6],["lib_dumbbell_flyes",4,15],["lib_cable_crossover",4,15],["lib_side_lateral_raise",4,12],["lib_lying_triceps_press",4,10]]},{ru:"Моя Ср - Спина/Бицепс",en:"My Wed - Back/Biceps",own:true,items:[["lib_barbell_deadlift",4,10],["lib_bent_over_barbell_row",4,10],["lib_pullups",4,10],["lib_wide_grip_lat_pulldown",4,10],["lib_dumbbell_bicep_curl",4,15]]},{ru:"Моя Пт - Ноги",en:"My Fri - Legs",own:true,items:[["lib_barbell_squat",4,12],["lib_romanian_deadlift",4,15],["lib_leg_press",4,15],["lib_leg_extensions",4,12],["lib_standing_calf_raises",4,15]]},{ru:"Full Body (всё тело)",en:"Full Body",own:false,items:[["lib_barbell_squat",3,8],["lib_barbell_bench_press___medium_grip",3,8],["lib_bent_over_barbell_row",3,8],["lib_standing_military_press",3,10],["lib_barbell_curl",3,12],["lib_plank",3,1]]},{ru:"Верх тела (Upper)",en:"Upper Body",own:false,items:[["lib_barbell_bench_press___medium_grip",4,8],["lib_bent_over_barbell_row",4,8],["lib_seated_dumbbell_press",3,10],["lib_wide_grip_lat_pulldown",3,12],["lib_barbell_curl",3,12],["lib_triceps_pushdown",3,12]]},{ru:"Низ тела (Lower)",en:"Lower Body",own:false,items:[["lib_barbell_squat",4,8],["lib_romanian_deadlift",4,10],["lib_leg_press",3,12],["lib_seated_leg_curl",3,12],["lib_standing_calf_raises",4,15],["lib_hanging_leg_raise",3,12]]},{ru:"Жим (Push)",en:"Push",own:false,items:[["lib_barbell_bench_press___medium_grip",4,8],["lib_incline_dumbbell_press",3,10],["lib_standing_military_press",3,10],["lib_side_lateral_raise",3,15],["lib_triceps_pushdown",3,12],["lib_lying_triceps_press",3,10]]},{ru:"Тяга (Pull)",en:"Pull",own:false,items:[["lib_barbell_deadlift",3,6],["lib_pullups",4,8],["lib_bent_over_barbell_row",4,10],["lib_seated_cable_rows",3,12],["lib_barbell_curl",3,12],["lib_hammer_curls",3,12]]},{ru:"Ноги (Legs)",en:"Legs",own:false,items:[["lib_barbell_full_squat",4,8],["lib_romanian_deadlift",4,10],["lib_leg_press",3,12],["lib_leg_extensions",3,15],["lib_lying_leg_curls",3,12],["lib_seated_calf_raise",4,20]]}];
+const LIB_BY_ID = Object.fromEntries(LIB.map(e => [e.i, e]));
+
 // ================== CONSTANTS ==================
 const MUSCLES = {
   chest:    ['Грудь',   '#3b82f6'],
@@ -627,14 +642,14 @@ function freshState() {
     workouts: [],
     body: Object.fromEntries(Object.keys(METRICS).map(k => [k, []])),
     notes: [],
-    settings: { restSec: 90, autoRest: true, barKg: 20, plates: [25,20,15,10,5,2.5,1.25], theme: 'light', hevyKey: '', hevyProxy: '' }
+    settings: { restSec: 90, autoRest: true, barKg: 20, plates: [25,20,15,10,5,2.5,1.25], theme: 'light', exLang: 'en' }
   };
 }
 
 // ================== AUTH & SYNC (Supabase / local) ==================
 // >>> ВСТАВЬ СЮДА СВОИ ДАННЫЕ ИЗ SUPABASE (Project Settings -> API) <<<
-const SUPABASE_URL = 'https://fthyvubrkyoeneqvoobx.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_MXZusyXZLGzwpnQWo99NKg_4oMFk5Vy';
+const SUPABASE_URL = 'https://ВАШ-ПРОЕКТ.supabase.co';
+const SUPABASE_ANON_KEY = 'ВАШ-ANON-KEY';
 const ACCOUNT_DOMAIN = 'gymplan.app'; // логин превращается в логин@gymplan.app для входа в Supabase
 
 const SUPA_ENABLED = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(SUPABASE_URL) && SUPABASE_ANON_KEY.length > 30;
@@ -891,6 +906,21 @@ function fmtVol(v) { return v >= 10000 ? (v/1000).toFixed(1)+' т' : Math.round(
 function e1rm(kg, reps) { if (!kg || !reps) return 0; return reps <= 1 ? kg : kg * (1 + reps/30); }
 function num(v) { const n = parseFloat(String(v).replace(',', '.')); return isNaN(n) ? 0 : n; }
 function exById(id) { return state.exercises.find(e => e.id === id); }
+function exName(ex) {
+  if (!ex) return '?';
+  if (ex.en || ex.ru) return (state.settings.exLang === 'ru' && ex.ru) ? ex.ru : (ex.en || ex.ru);
+  return ex.name || '?';
+}
+// найти/создать упражнение каталога из библиотеки
+function libEnsure(libId) {
+  const l = LIB_BY_ID[libId];
+  if (!l) return null;
+  let ex = state.exercises.find(e => e.libId === libId);
+  if (ex) return ex.id;
+  const id = uid();
+  state.exercises.push({ id, libId, name: l.en, en: l.en, ru: l.ru, muscle: l.m, img: l.img });
+  return id;
+}
 function muscleChip(m) { const info = MUSCLES[m] || MUSCLES.other; return `<span class="m-chip" style="background:${info[1]}">${info[0]}</span>`; }
 function vib(p) { if (navigator.vibrate) navigator.vibrate(p); }
 
@@ -1127,8 +1157,23 @@ function renderStart() {
   if (active) { renderLive(el); return; }
 
   let html = `<button class="big-btn" style="margin-top:8px;" onclick="startEmpty()">▶ Начать пустую тренировку</button>`;
+
+  // готовые шаблоны
+  const ru = state.settings.exLang === 'ru';
+  const own = TEMPLATES.filter(t => t.own), common = TEMPLATES.filter(t => !t.own);
+  const tplCard = (t, i, arr) => {
+    const gi = arr === own ? i : own.length + i;
+    return `<div class="tpl-card${t.own ? ' own' : ''}" onclick="addTemplate(${gi})">
+      ${t.own ? '<div class="tpl-badge">МОЯ</div>' : ''}
+      <div class="tpl-name">${esc(ru ? t.ru : t.en)}</div>
+      <div class="tpl-sub">${t.items.length} упражнений</div>
+    </div>`;
+  };
+  html += `<div class="sec-title">Мои программы-шаблоны</div><div class="tpl-scroll">${own.map((t,i)=>tplCard(t,i,own)).join('')}</div>`;
+  html += `<div class="sec-title">Готовые сплиты</div><div class="tpl-scroll">${common.map((t,i)=>tplCard(t,i,common)).join('')}</div>`;
+
   if (!state.routines.length) {
-    html += `<div class="empty"><div class="e-ico">📋</div>Создай программу тренировки,<br>чтобы стартовать в один тап.</div>`;
+    html += `<div class="empty"><div class="e-ico">📋</div>Выбери шаблон выше или создай программу с нуля.</div>`;
   } else {
     html += `<div class="sec-title">Мои программы</div>`;
     html += state.routines.map(r => {
@@ -1145,6 +1190,21 @@ function renderStart() {
     }).join('');
   }
   el.innerHTML = html;
+}
+
+function addTemplate(gi) {
+  const t = TEMPLATES[gi];
+  if (!t) return;
+  const ru = state.settings.exLang === 'ru';
+  const items = t.items.map(([libId, sets, reps]) => {
+    const exId = libEnsure(libId);
+    return { id: uid(), exId, sets: Array.from({ length: sets }, () => ({ kg: '', reps: String(reps), rpe: '', done: false })) };
+  });
+  const r = { id: uid(), name: ru ? t.ru : t.en, note: '', items };
+  state.routines.push(r);
+  save();
+  renderStart();
+  toast('✅', 'Программа добавлена', ru ? t.ru : t.en);
 }
 
 // ================== ROUTINE EDITOR ==================
@@ -1167,11 +1227,12 @@ function renderRoutineItems() {
   if (!editRoutine.items.length) { el.innerHTML = `<div class="hint" style="padding:6px 2px 12px;">Пока пусто. Добавь упражнения.</div>`; return; }
   el.innerHTML = editRoutine.items.map((it, i) => {
     const ex = exById(it.exId) || { name: '?', muscle: 'other' };
+    const exNm = exName(ex);
     return `<div class="re-item${it.superset != null ? ' ss' : ''}">
       ${it.superset != null ? '<div class="ss-label">Суперсет</div>' : ''}
       <div class="row-between">
         <div>
-          <div class="re-name">${esc(ex.name)}</div>
+          <div class="re-name">${esc(exNm)}</div>
           <div class="re-sub">${it.sets.length} x ${it.sets[0]?.reps || '?'}${it.sets[0]?.kg ? ' · ' + it.sets[0].kg + ' кг' : ''} · ${MUSCLES[ex.muscle][0]}</div>
         </div>
         ${muscleChip(ex.muscle)}
@@ -1273,14 +1334,31 @@ function renderPickerMuscles() {
 }
 function renderPicker() {
   const q = document.getElementById('pickSearch').value.trim().toLowerCase();
-  let list = state.exercises.slice().sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-  if (pickMuscle !== 'all') list = list.filter(e => e.muscle === pickMuscle);
-  if (q) list = list.filter(e => e.name.toLowerCase().includes(q));
-  document.getElementById('pickList').innerHTML = list.length ? list.map(e => `
-    <div class="pick-row" onclick="pickDone('${e.id}')">
-      <div class="pick-name">${esc(e.name)}</div>
-      <span class="pick-muscle" style="background:${MUSCLES[e.muscle][1]}">${MUSCLES[e.muscle][0]}</span>
-    </div>`).join('') : `<div class="hint" style="padding:14px 2px;">Ничего не найдено. Создай новое упражнение ниже.</div>`;
+  const ru = state.settings.exLang === 'ru';
+  // пользовательские упражнения (не из библиотеки), чтобы не дублировать каталог
+  const custom = state.exercises.filter(e => !e.libId);
+  let rows = [];
+  custom.forEach(e => rows.push({ kind: 'custom', id: e.id, name: exName(e), sub: '', muscle: e.muscle, img: e.img || '' }));
+  LIB.forEach(l => rows.push({ kind: 'lib', libId: l.i, name: ru ? l.ru : l.en, sub: ru ? l.en : l.ru, muscle: l.m, img: l.img, equip: l.equip }));
+  if (pickMuscle !== 'all') rows = rows.filter(r => r.muscle === pickMuscle);
+  if (q) rows = rows.filter(r => (r.name + ' ' + (r.sub || '')).toLowerCase().includes(q));
+  rows.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+  document.getElementById('pickList').innerHTML = rows.length ? rows.map(r => `
+    <div class="pick-row" onclick="${r.kind === 'lib' ? `pickLib('${r.libId}')` : `pickDone('${r.id}')`}">
+      <div class="pick-l">
+        ${r.img ? `<img class="pick-thumb" loading="lazy" src="${r.img}" onerror="this.style.visibility='hidden'"/>` : '<div class="pick-thumb"></div>'}
+        <div style="min-width:0;">
+          <div class="pick-name">${esc(r.name)}</div>
+          ${r.sub ? `<div class="pick-sub">${esc(r.sub)}</div>` : ''}
+        </div>
+      </div>
+      <span class="pick-muscle" style="background:${MUSCLES[r.muscle][1]}">${MUSCLES[r.muscle][0]}</span>
+    </div>`).join('') : `<div class="hint" style="padding:14px 2px;">Ничего не найдено. Создай своё упражнение ниже.</div>`;
+}
+function pickLib(libId) {
+  const exId = libEnsure(libId);
+  save();
+  pickDone(exId);
 }
 function pickDone(exId) {
   document.getElementById('ovPick').classList.remove('open');
@@ -1395,6 +1473,7 @@ function activeSetsDone() {
 
 function liveExCard(en, i) {
   const ex = exById(en.exId) || { name: '?', muscle: 'other' };
+  const exNm = exName(ex);
   const prev = prevSetsFor(en.exId);
   const rpe = en.rpeOn;
   let normalIdx = 0;
@@ -1417,7 +1496,7 @@ function liveExCard(en, i) {
     ${en.superset != null ? '<div class="ss-label">Суперсет</div>' : ''}
     <div class="ex-head">
       <div style="min-width:0;">
-        <div class="ex-title" onclick="openExDetail('${en.exId}')">${esc(ex.name)}</div>
+        <div class="ex-title" onclick="openExDetail('${en.exId}')">${esc(exNm)}</div>
         ${en.note ? `<div class="ex-note-txt">${esc(en.note)}</div>` : ''}
       </div>
       <button class="icon-btn" onclick="liveExMenu(event,${i})">⋯</button>
@@ -1479,8 +1558,8 @@ function checkPr(exId, s) {
   if (!kg) return;
   const rec = exRecords(exId, active.startTs);
   const ex = exById(exId);
-  if (kg > rec.maxKg && rec.maxKg > 0) toast('🏆', 'Новый рекорд веса!', `${ex.name}: ${kg} кг`);
-  else if (e1rm(kg, reps) > rec.best1 && rec.best1 > 0) toast('🥇', 'Новый 1ПМ рекорд!', `${ex.name}: ~${Math.round(e1rm(kg, reps))} кг`);
+  if (kg > rec.maxKg && rec.maxKg > 0) toast('🏆', 'Новый рекорд веса!', `${exName(ex)}: ${kg} кг`);
+  else if (e1rm(kg, reps) > rec.best1 && rec.best1 > 0) toast('🥇', 'Новый 1ПМ рекорд!', `${exName(ex)}: ~${Math.round(e1rm(kg, reps))} кг`);
 }
 
 function liveExMenu(e, i) {
@@ -1704,9 +1783,10 @@ function openWoDetail(id) {
   } else {
     html += `<div class="sec-title">Упражнения</div>` + w.entries.map(en => {
       const ex = exById(en.exId) || { name: '?', muscle: 'other' };
+      const exNm = exName(ex);
       let ni = 0;
       return `<div class="card">
-        <div class="row-between"><div class="re-name">${esc(ex.name)}</div>${muscleChip(ex.muscle)}</div>
+        <div class="row-between"><div class="re-name">${esc(exNm)}</div>${muscleChip(ex.muscle)}</div>
         ${en.note ? `<div class="hint" style="margin-top:4px;">${esc(en.note)}</div>` : ''}
         ${en.sets.map(s => `<div class="rec-row"><span class="r-l">${s.type === 'N' ? 'Сет ' + (++ni) : ({W:'Разминка',F:'Отказ',D:'Дроп-сет'})[s.type]}</span><b>${s.kg ? s.kg + ' кг × ' + s.reps : s.reps + ' повт.'}${s.rpe ? ' <span style="color:var(--muted);font-weight:600">@' + s.rpe + '</span>' : ''}</b></div>`).join('')}
       </div>`;
@@ -1821,7 +1901,7 @@ function renderProgress() {
       ${exStats.length ? exStats.map(s => `
         <div class="exp-row" onclick="openExDetail('${s.ex.id}')">
           <div>
-            <div class="exp-name">${esc(s.ex.name)}</div>
+            <div class="exp-name">${esc(exName(s.ex))}</div>
             <div class="exp-sub">${MUSCLES[s.ex.muscle][0]} · ${s.n} сетов · был ${fmtDate(tsISO(s.last))}</div>
           </div>
           <div class="exp-best">${s.best ? s.best + ' кг' : ''}</div>
@@ -1840,7 +1920,7 @@ function openExDetail(exId) {
 function renderExDetail() {
   const ex = exById(edExId);
   if (!ex) return;
-  document.getElementById('edTitle').textContent = ex.name;
+  document.getElementById('edTitle').textContent = exName(ex);
   const sets = exerciseSets(edExId);
   const rec = exRecords(edExId);
 
@@ -1958,7 +2038,7 @@ function renderReport() {
       <div class="stat-card"><div class="stat-v">${cur.wDelta === null ? '-' : (cur.wDelta > 0 ? '+' : '') + cur.wDelta + ' кг'}</div><div class="stat-s">вес тела за месяц</div></div>
     </div>
     ${cur.topM ? `<div class="sec-title">Фокус месяца</div><div class="card"><div class="row-between"><div class="re-name">Больше всего сетов: ${MUSCLES[cur.topM[0]][0]}</div><b>${cur.topM[1]}</b></div></div>` : ''}
-    ${cur.topEx.length ? `<div class="sec-title">Топ упражнений по объёму</div><div class="card">${cur.topEx.map(([id, v]) => `<div class="rec-row"><span>${esc((exById(id)||{name:'?'}).name)}</span><b>${fmtVol(v)}</b></div>`).join('')}</div>` : ''}
+    ${cur.topEx.length ? `<div class="sec-title">Топ упражнений по объёму</div><div class="card">${cur.topEx.map(([id, v]) => `<div class="rec-row"><span>${esc(exName(exById(id)))}</span><b>${fmtVol(v)}</b></div>`).join('')}</div>` : ''}
     ${!cur.count ? `<div class="empty">В этом месяце тренировок не было.</div>` : ''}
   `;
 }
@@ -1994,7 +2074,7 @@ function renderYear() {
       <div class="stat-card"><div class="stat-v">${Math.max(...perMonth)}</div><div class="stat-s">лучший месяц: ${new Date(yrYear, bestMonth, 1).toLocaleDateString('ru-RU',{month:'long'})}</div></div>
     </div>
     ${topM ? `<div class="card" style="margin-top:12px;"><div class="rec-row"><span class="r-l">Самая тренируемая группа</span><b>${MUSCLES[topM[0]][0]}</b></div>
-    ${favEx ? `<div class="rec-row"><span class="r-l">Любимое упражнение</span><b>${esc((exById(favEx[0])||{name:'?'}).name)}</b></div>` : ''}</div>` : ''}
+    ${favEx ? `<div class="rec-row"><span class="r-l">Любимое упражнение</span><b>${esc(exName(exById(favEx[0])))}</b></div>` : ''}</div>` : ''}
     <div class="hint" style="text-align:center;margin-top:14px;">Эквивалент объёма: ~${Math.max(1, Math.round(vol / 4000))} слонов 🐘</div>
   ` : `<div class="empty"><div class="e-ico">🎉</div>За ${yrYear} тренировок не записано.</div>`;
 }
@@ -2222,6 +2302,16 @@ function renderMore() {
     </div>
 
     <div class="sec-title">Данные</div>
+    <div class="sec-title">Упражнения</div>
+    <div class="card">
+      <div class="set-row2"><span>Язык названий</span>
+        <div style="display:flex;gap:8px;">
+          <button class="chip-btn${s.exLang==='en'?' on':''}" onclick="setExLang('en')">English</button>
+          <button class="chip-btn${s.exLang==='ru'?' on':''}" onclick="setExLang('ru')">Русский</button>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="set-row2"><span>Резервная копия (без фото)</span>
         <div style="display:flex;gap:8px;">
@@ -2231,22 +2321,10 @@ function renderMore() {
       </div>
     </div>
 
-    <div class="sec-title">Импорт из Hevy</div>
-    <div class="card">
-      <div class="hint" style="margin-bottom:10px;">Нужен Hevy Pro. Ключ: hevy.com/settings, раздел Developer. Если браузер блокирует запрос (CORS), залей hevy-proxy.php на свой хостинг и укажи его URL.</div>
-      <div class="f-label">API ключ</div>
-      <input class="f-input" type="password" value="${esc(s.hevyKey)}" onchange="setSetting('hevyKey', this.value.trim())" placeholder="xxxxxxxx-xxxx-..." />
-      <div class="f-label">URL прокси (необязательно)</div>
-      <input class="f-input" value="${esc(s.hevyProxy)}" onchange="setSetting('hevyProxy', this.value.trim())" placeholder="https://мойсайт/hevy-proxy.php" />
-      <div style="display:flex;gap:8px;">
-        <button class="ghost-btn" style="margin:0;" onclick="hevyImportRoutines()">Импорт программ</button>
-        <button class="ghost-btn" style="margin:0;" onclick="hevyImportWorkouts()">Импорт тренировок</button>
-      </div>
-      <div class="hint" id="hevyStatus" style="margin-top:8px;"></div>
-    </div>
   `;
 }
 function setSetting(k, v) { state.settings[k] = v; save(); }
+function setExLang(l) { state.settings.exLang = l; save(); renderMore(); renderStart(); }
 function setPlates(v) {
   const arr = v.split(',').map(x => num(x)).filter(x => x > 0);
   if (arr.length) { state.settings.plates = arr; save(); }
@@ -2311,89 +2389,6 @@ function importData(input) {
     }
   };
   r.readAsText(f);
-}
-
-// ================== HEVY IMPORT ==================
-async function hevyFetch(path) {
-  const key = state.settings.hevyKey;
-  if (!key) throw new Error('Укажи API ключ');
-  const proxy = state.settings.hevyProxy;
-  const url = proxy ? proxy + '?path=' + encodeURIComponent(path) : 'https://api.hevyapp.com' + path;
-  const headers = proxy ? {} : { 'api-key': key };
-  if (proxy) headers['x-hevy-key'] = key;
-  const r = await fetch(url, { headers });
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
-}
-function hevyStatus(msg) { const el = document.getElementById('hevyStatus'); if (el) el.textContent = msg; }
-function hevySetMap(s) {
-  const t = { warmup: 'W', failure: 'F', dropset: 'D' }[s.type] || 'N';
-  return { type: t, kg: s.weight_kg ?? null, reps: s.reps ?? null };
-}
-async function hevyImportRoutines() {
-  try {
-    hevyStatus('Загружаю программы...');
-    let page = 1, added = 0;
-    while (page <= 10) {
-      const data = await hevyFetch(`/v1/routines?page=${page}&pageSize=10`);
-      const list = data.routines || [];
-      for (const r of list) {
-        if (state.routines.some(x => x.hevyId === r.id)) continue;
-        const items = (r.exercises || []).map(ex => ({
-          id: uid(),
-          exId: catalogFind(state, ex.title || 'Упражнение', 'other'),
-          note: ex.notes || '', superset: ex.superset_id != null ? 'h' + ex.superset_id : null,
-          sets: (ex.sets || []).map(hevySetMap)
-        }));
-        state.routines.push({ id: uid(), hevyId: r.id, name: r.title || 'Из Hevy', note: '', items });
-        added++;
-      }
-      if (list.length < 10) break;
-      page++;
-    }
-    save();
-    hevyStatus(`Готово: добавлено программ - ${added}`);
-    toast('✅', 'Hevy', `Импортировано программ: ${added}`);
-  } catch (e) {
-    hevyStatus('Ошибка: ' + e.message + '. Если это CORS - используй PHP прокси.');
-  }
-}
-async function hevyImportWorkouts() {
-  try {
-    hevyStatus('Загружаю тренировки...');
-    let page = 1, added = 0;
-    while (page <= 50) {
-      const data = await hevyFetch(`/v1/workouts?page=${page}&pageSize=10`);
-      const list = data.workouts || [];
-      for (const w of list) {
-        if (state.workouts.some(x => x.hevyId === w.id)) continue;
-        const start = new Date(w.start_time).getTime();
-        const end = new Date(w.end_time).getTime();
-        state.workouts.push({
-          id: uid(), hevyId: w.id, name: w.title || 'Из Hevy', routineId: null,
-          dateISO: tsISO(start), startTs: start,
-          durationSec: Math.max(0, Math.round((end - start) / 1000)),
-          note: w.description || '',
-          entries: (w.exercises || []).map(ex => ({
-            exId: catalogFind(state, ex.title || 'Упражнение', 'other'),
-            note: ex.notes || '', superset: ex.superset_id != null ? 'h' + ex.superset_id : null,
-            sets: (ex.sets || []).map(s => ({ ...hevySetMap(s), rpe: s.rpe || null, done: true }))
-          })).filter(en => en.sets.length)
-        });
-        added++;
-      }
-      hevyStatus(`Загружено страниц: ${page}, тренировок: ${added}...`);
-      if (list.length < 10) break;
-      page++;
-    }
-    state.workouts.sort((a, b) => a.startTs - b.startTs);
-    invalidatePr(); save();
-    hevyStatus(`Готово: импортировано тренировок - ${added}`);
-    toast('✅', 'Hevy', `Импортировано тренировок: ${added}`);
-    renderView(currentView);
-  } catch (e) {
-    hevyStatus('Ошибка: ' + e.message + '. Если это CORS - используй PHP прокси.');
-  }
 }
 
 // ================== INIT ==================
