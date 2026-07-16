@@ -556,18 +556,28 @@ body{ letter-spacing:-0.01em; }
 .hero-actions .big-btn{ flex:1; }
 
 /* ---- premium dark auth (like onboarding) ---- */
-#pgAuth{ background:#000; }
-#pgAuth .auth-wrap{ max-width:460px; margin:0 auto; padding:0 22px calc(env(safe-area-inset-bottom,0px) + 24px); min-height:100dvh; display:flex; flex-direction:column; justify-content:flex-end; }
-#pgAuth .auth-logo{ font-size:0; width:52px; height:52px; margin:0 0 auto; margin-top:calc(env(safe-area-inset-top,0px) + 40px); }
-#pgAuth h2{ color:#fff; font-size:34px; font-weight:900; letter-spacing:-0.03em; line-height:1.05; margin-bottom:12px; }
-#pgAuth .hint{ color:#a9a9ad; font-size:16px; line-height:1.45; margin-bottom:20px; }
-#pgAuth .seg{ background:#161618; border-color:#26262a; margin-bottom:14px; }
-#pgAuth .seg button{ color:#8e8e93; }
-#pgAuth .seg button.on{ background:#2a2a2e; color:#fff; }
-#pgAuth .f-input{ background:#141416; border-color:#26262a; color:#fff; margin-bottom:12px; }
-#pgAuth .f-input::placeholder{ color:#6e6e73; }
-#pgAuth .big-btn{ margin-top:6px; }
-#pgAuth .auth-err{ color:#ff6b6b; min-height:18px; font-weight:600; }
+#pgAuth{ background:var(--bg); }
+#pgAuth .auth-wrap{ max-width:420px; margin:0 auto; padding:calc(env(safe-area-inset-top,0px) + 36px) 22px calc(env(safe-area-inset-bottom,0px) + 28px); min-height:100dvh; display:flex; flex-direction:column; justify-content:center; text-align:center; }
+.auth-logo2{ width:76px; height:76px; border-radius:22px; background:var(--coral); box-shadow:0 12px 28px rgba(213,87,94,.35); display:flex; align-items:center; justify-content:center; margin:0 auto 20px; color:#fff; flex-shrink:0; }
+#pgAuth h2{ font-size:30px; font-weight:900; letter-spacing:-0.03em; line-height:1.1; margin-bottom:6px; color:var(--text); }
+#pgAuth .hint{ font-size:15px; line-height:1.45; margin-bottom:22px; }
+#pgAuth .seg{ margin-bottom:18px; }
+#pgAuth .f-label{ text-align:left; }
+#pgAuth .big-btn{ margin:4px 0 0; box-shadow:0 10px 24px rgba(213,87,94,.3); }
+#pgAuth .auth-err{ color:var(--red); min-height:18px; font-weight:600; font-size:13px; text-align:left; margin-bottom:2px; }
+.au-field{ position:relative; margin-bottom:13px; }
+.au-field .fi{ position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--muted); display:flex; pointer-events:none; }
+.au-field .f-input{ margin:0; padding-left:40px; text-align:left; }
+.au-field .f-input.haspass{ padding-right:80px; }
+.au-show{ position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--coral); font-weight:700; font-size:13px; cursor:pointer; padding:4px; }
+.au-forgot{ text-align:right; margin:0 0 8px; }
+.au-forgot a{ color:var(--coral); font-size:13.5px; font-weight:700; cursor:pointer; }
+.au-or{ display:flex; align-items:center; gap:12px; color:var(--muted); font-size:12.5px; font-weight:600; margin:18px 0 14px; }
+.au-or::before,.au-or::after{ content:''; flex:1; height:1px; background:var(--border); }
+.au-social{ display:flex; gap:10px; }
+.au-social button{ flex:1; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:13px; font-size:14.5px; font-weight:700; color:var(--text); cursor:pointer; box-shadow:var(--shadow); }
+.au-foot{ font-size:13.5px; color:var(--muted); margin-top:18px; }
+.au-foot a{ color:var(--coral); font-weight:800; cursor:pointer; }
 
 
 .hero-name{ font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
@@ -662,18 +672,18 @@ body{ letter-spacing:-0.01em; }
 
 
 /* ===== ACTIVE WORKOUT (mockup) ===== */
-#viewStart:has(.live-head){ padding:0; }
-.live-head{ position:sticky; top:0; z-index:15; background:var(--card); display:flex; align-items:center; justify-content:space-between; gap:10px; padding:calc(env(safe-area-inset-top,0px) + 10px) 20px 12px; }
+#viewStart:has(.live-head){ padding:0 0 calc(env(safe-area-inset-bottom,0px) + 80px); }
+.live-head{ position:sticky; top:0; z-index:15; background:var(--card); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding:calc(env(safe-area-inset-top,0px) + 10px) 20px 12px; }
 .live-back{ width:38px; height:38px; border-radius:50%; background:var(--card2); border:none; color:var(--text); font-size:20px; cursor:pointer; flex-shrink:0; }
 .live-hcenter{ text-align:center; min-width:0; flex:1; }
 .live-title{ font-size:17px; font-weight:800; color:var(--text); }
 .live-meta{ font-size:12px; font-weight:600; color:var(--muted); margin-top:1px; }
 .live-meta b{ color:var(--text); }
 .live-timer{ font-size:15px; font-weight:800; color:var(--coral); font-variant-numeric:tabular-nums; flex-shrink:0; min-width:52px; text-align:right; }
-.live-prog{ position:sticky; top:60px; z-index:15; height:6px; background:var(--pink-soft); margin:0 20px 14px; border-radius:3px; overflow:hidden; }
+.live-prog{ flex-basis:100%; width:100%; height:6px; background:var(--pink-soft); margin:2px 0 0; border-radius:3px; overflow:hidden; }
 .live-prog-fill{ height:100%; background:var(--coral); border-radius:3px; transition:width .3s ease; }
-.live-body{ padding:0 20px; }
-.live-cta{ position:sticky; bottom:0; padding:12px 20px calc(env(safe-area-inset-bottom,0px) + 14px); background:linear-gradient(180deg,transparent,var(--bg) 32%); }
+.live-body{ padding:14px 20px 0; }
+.live-cta{ position:sticky; bottom:calc(env(safe-area-inset-bottom,0px) + 66px); z-index:14; padding:12px 20px; background:linear-gradient(180deg,transparent,var(--bg) 32%); }
 
 .ex-card{ background:var(--card); border:1px solid var(--border); border-radius:22px; padding:16px; margin-bottom:14px; box-shadow:var(--shadow); position:relative; }
 .ex-card.ss{ border-left:4px solid var(--coral); }
@@ -788,8 +798,7 @@ body{ letter-spacing:-0.01em; }
   .rc-compact .rc-name{ font-size:17.5px; }
   .rc-start{ font-size:15.5px; padding:14px; }
   .live-head{ padding-left:16px; padding-right:16px; }
-  .live-prog{ margin-left:16px; margin-right:16px; }
-  .live-body{ padding:0 16px; }
+  .live-body{ padding-left:16px; padding-right:16px; }
   .live-cta{ padding-left:16px; padding-right:16px; }
   .ex-card{ padding:13px; border-radius:19px; }
   .ex-tile{ width:46px; height:46px; border-radius:13px; }
@@ -841,7 +850,6 @@ body{ letter-spacing:-0.01em; }
   .page-head{ margin-left:calc(-1 * var(--side)); margin-right:calc(-1 * var(--side)); padding-left:var(--side); padding-right:var(--side); }
   .bottom-nav{ padding-left:calc(var(--side) - 18px); padding-right:calc(var(--side) - 18px); }
   .live-head{ padding-left:var(--side); padding-right:var(--side); }
-  .live-prog{ margin-left:var(--side); margin-right:var(--side); }
   .live-body{ padding-left:var(--side); padding-right:var(--side); }
   .live-cta{ padding-left:var(--side); padding-right:var(--side); }
   .rest-screen{ padding-left:var(--side); padding-right:var(--side); }
@@ -1039,18 +1047,43 @@ body{ letter-spacing:-0.01em; }
 <!-- ===== PAGE: auth ===== -->
 <div class="page" id="pgAuth" style="z-index:340;">
   <div class="auth-wrap">
-    <div class="auth-logo"><svg viewBox="0 0 40 40" width="52" height="52" aria-label="Gym Plan"><path d="M20 4h11l-11 16H9z" fill="#fff"/><path d="M9 20h11L9 36H-2z" transform="translate(11 0)" fill="#fff"/></svg></div>
-    <h2>Gym Plan</h2>
-    <p class="hint">Войди в аккаунт - прогресс сохранится на сервере и будет доступен с любого устройства. Достаточно одного входа, дальше вспомнит автоматически.</p>
+    <div class="auth-logo2"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Gym Plan"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4M18.9 5.1l1.4-1.4"/><path d="M9.404 7.596a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 1 0-2.828 2.829l2.828 2.828a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829z"/></svg></div>
+    <h2 id="auTitle">С возвращением</h2>
+    <p class="hint" id="auSub">Войди, чтобы серия не прервалась</p>
     <div class="seg">
       <button id="auTabL" class="on" onclick="setAuthMode('login')">Вход</button>
       <button id="auTabR" onclick="setAuthMode('register')">Регистрация</button>
     </div>
-    <input class="f-input" id="auName" placeholder="Email или логин" autocomplete="username" />
-    <input class="f-input" id="auPass" type="password" placeholder="Пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter')authSubmit()" />
-    <input class="f-input" id="auPass2" type="password" placeholder="Повтори пароль" style="display:none;" onkeydown="if(event.key==='Enter')authSubmit()" />
+    <div class="f-label">Email или логин</div>
+    <div class="au-field">
+      <span class="fi"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+      <input class="f-input" id="auName" placeholder="you@email.com" autocomplete="username" />
+    </div>
+    <div class="f-label">Пароль</div>
+    <div class="au-field">
+      <span class="fi"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+      <input class="f-input haspass" id="auPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')authSubmit()" />
+      <button class="au-show" onclick="togglePass('auPass', this)">Показать</button>
+    </div>
+    <div id="auPass2Wrap" style="display:none;">
+      <div class="f-label">Повтори пароль</div>
+      <div class="au-field">
+        <span class="fi"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <input class="f-input haspass" id="auPass2" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')authSubmit()" />
+        <button class="au-show" onclick="togglePass('auPass2', this)">Показать</button>
+      </div>
+    </div>
+    <div class="au-forgot" id="auForgot"><a onclick="forgotPass()">Забыл пароль?</a></div>
     <div class="auth-err" id="authErr"></div>
     <button class="big-btn" id="auBtn" onclick="authSubmit()">Войти</button>
+    <div id="auSocialWrap" style="display:none;">
+      <div class="au-or"><span>или продолжить через</span></div>
+      <div class="au-social">
+        <button onclick="oauthLogin('apple')">Apple</button>
+        <button onclick="oauthLogin('google')">Google</button>
+      </div>
+    </div>
+    <div class="au-foot" id="auFoot"></div>
   </div>
 </div>
 
@@ -1090,7 +1123,17 @@ const I18N_KEYS=["Войди в аккаунт - прогресс сохрани
 "Начать":"Start","1ПМ":"1RM",
 "(пусто = без цели):":"(empty = no target):",
 "1М":"1M","3М":"3M","6М":"6M",
-"кг":"kg","см":"cm","Резервная копия":"Backup"};
+"кг":"kg","см":"cm","Резервная копия":"Backup",
+"Восстановление пока недоступно":"Password reset isn't available yet",
+"Прогресс сохранится на всех устройствах":"Your progress syncs across devices",
+"Войди, чтобы серия не прервалась":"Log in to keep your streak going",
+"Уже есть аккаунт?":"Already have an account?",
+"или продолжить через":"or continue with",
+"С возвращением":"Welcome back",
+"Создай аккаунт":"Create an account",
+"Впервые здесь?":"New here?",
+"Забыл пароль?":"Forgot password?",
+"Показать":"Show","Скрыть":"Hide"};
 for(var k in extra){ if(!(k in I18N)){ I18N[k]=extra[k]; I18N_KEYS.push(k); } }
 I18N_KEYS.sort(function(a,b){return b.length-a.length;});})();
 function LANG() { try { return (state && state.settings && state.settings.lang) || 'en'; } catch (e) { return 'en'; } }
@@ -1312,11 +1355,32 @@ let authMode = 'login';
 function showAuth() { document.getElementById('pgAuth').classList.add('open'); renderAuthMode(); }
 function setAuthMode(m) { authMode = m; document.getElementById('authErr').textContent = ''; renderAuthMode(); }
 function renderAuthMode() {
-  document.getElementById('auTabL').classList.toggle('on', authMode === 'login');
-  document.getElementById('auTabR').classList.toggle('on', authMode === 'register');
-  document.getElementById('auPass2').style.display = authMode === 'register' ? 'block' : 'none';
+  const login = authMode === 'login';
+  document.getElementById('auTabL').classList.toggle('on', login);
+  document.getElementById('auTabR').classList.toggle('on', !login);
+  document.getElementById('auPass2Wrap').style.display = login ? 'none' : 'block';
+  document.getElementById('auForgot').style.display = login ? 'block' : 'none';
+  document.getElementById('auTitle').textContent = login ? 'С возвращением' : 'Создай аккаунт';
+  document.getElementById('auSub').textContent = login ? 'Войди, чтобы серия не прервалась' : 'Прогресс сохранится на всех устройствах';
+  document.getElementById('auFoot').innerHTML = login
+    ? `Впервые здесь? <a onclick="setAuthMode('register')">Создать аккаунт</a>`
+    : `Уже есть аккаунт? <a onclick="setAuthMode('login')">Войти</a>`;
+  document.getElementById('auSocialWrap').style.display = BACKEND === 'supabase' ? 'block' : 'none';
   const b = document.getElementById('auBtn'); b.disabled = false;
-  b.textContent = authMode === 'login' ? 'Войти' : 'Создать аккаунт';
+  b.textContent = login ? 'Войти' : 'Создать аккаунт';
+}
+function togglePass(id, btn) {
+  const inp = document.getElementById(id);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.textContent = show ? trHTML('Скрыть') : trHTML('Показать');
+}
+function forgotPass() {
+  toast(ico('info', 24), trHTML('Пароль'), trHTML('Восстановление пока недоступно'));
+}
+function oauthLogin(provider) {
+  if (!sb) return;
+  sb.auth.signInWithOAuth({ provider, options: { redirectTo: location.href } }).catch(() => {});
 }
 async function authSubmit() {
   const u = document.getElementById('auName').value.trim().toLowerCase();
@@ -2200,8 +2264,8 @@ function renderLive(el) {
         <div class="live-meta"><b id="liveSets">${done.d}/${done.t}</b> сетов · Объём <b id="liveVol">${fmtVol(vol)}</b></div>
       </div>
       <div class="live-timer" id="liveElapsed">${fmtClock(elapsedSec())}</div>
+      <div class="live-prog"><div class="live-prog-fill" id="liveProg" style="width:${pct}%"></div></div>
     </div>
-    <div class="live-prog"><div class="live-prog-fill" id="liveProg" style="width:${pct}%"></div></div>
     <div class="live-body">
       ${active.entries.map((en, i) => liveExCard(en, i)).join('')}
       <button class="dash-btn" style="margin-bottom:10px;" onclick="openPicker(addExToActive)">+ Добавить упражнение</button>
