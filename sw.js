@@ -1,4 +1,4 @@
-const CACHE = 'gymplan-v3-recovery';
+const CACHE = 'gymplan-v3-red';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {

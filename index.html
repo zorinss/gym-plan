@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#f2f3f7" />
+<meta name="theme-color" content="#f4f3f3" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Gym" />
@@ -585,6 +585,43 @@ body{ letter-spacing:-0.01em; }
 .hero-dots{ display:flex; gap:6px; justify-content:center; margin-top:12px; }
 .hero-dot{ width:7px; height:7px; border-radius:50%; background:var(--border); }
 .hero-dot.on{ background:var(--accent); width:18px; border-radius:4px; }
+
+
+/* ==================== PALETTE: RED (B62A2D / D5575E / E6A8A8 / 222223) ==================== */
+:root{
+  --bg:#f4f3f3; --card:#ffffff; --card2:#f6efef; --border:#ececec;
+  --text:#222223; --muted:#8d8a8b;
+  --accent:#b62a2d; --accent-strong:#b62a2d; --accent-soft:rgba(182,42,45,.10);
+  --coral:#d5575e; --pink:#e6a8a8; --pink-soft:rgba(230,168,168,.24);
+  --purple:#d5575e; --purple-soft:rgba(213,87,94,.12);
+  --blue:#b62a2d; --red:#b62a2d; --green:#7a8a7f; --orange:#d5575e;
+  --ring-track:#ececec;
+  --shadow:0 1px 2px rgba(34,34,35,.05), 0 12px 30px rgba(34,34,35,.07);
+  --radius:20px;
+}
+[data-theme="dark"]{
+  --bg:#161617; --card:#222223; --card2:#2b2b2c; --border:#343436;
+  --text:#fefefe; --muted:#9a9799;
+  --accent:#d5575e; --accent-strong:#e6a8a8; --accent-soft:rgba(213,87,94,.18);
+  --coral:#d5575e; --pink:#e6a8a8; --pink-soft:rgba(230,168,168,.16);
+  --purple:#d5575e; --purple-soft:rgba(213,87,94,.20);
+  --blue:#d5575e; --red:#e6666c; --green:#9fb0a4; --orange:#d5575e;
+  --ring-track:#343436;
+  --shadow:none;
+}
+.big-btn{ font-weight:700; }
+.big-btn.purple{ background:var(--coral); color:#fff; }
+.big-btn.neutral{ background:var(--text); color:var(--bg); }
+.tpl-card.own{ border-color:var(--coral); }
+.tpl-badge{ color:var(--coral); border-color:var(--coral); }
+.chip-btn.primary,.chip-btn.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.routine-card .start,.btn-p{ background:var(--accent); color:#fff; }
+.set-check.on{ background:var(--accent); border-color:var(--accent); }
+.set-badge.N{ background:var(--pink-soft); color:var(--accent); }
+.stat-s{ color:var(--accent); }
+.hero-dot.on{ background:var(--coral); }
+.hero-days.low{ color:var(--accent); } .hero-days.mid{ color:var(--coral); } .hero-days.ok{ color:var(--muted); }
+[data-theme="dark"] .hero-days.low{ color:#e6666c; }
 
 </style>
 </head>
@@ -1401,11 +1438,18 @@ function heroCycle() {
   const n = muscleRecovery().length;
   if (n > 1) { heroIdx = (heroIdx + 1) % n; renderStart(); }
 }
-function heroRingSVG(pct, color) {
+function heroRingSVG(pct) {
   const R = 76, C = 2 * Math.PI * R, off = C * (1 - pct / 100);
   return `<svg viewBox="0 0 180 180">
+      <defs>
+        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#e6a8a8"/>
+          <stop offset="0.55" stop-color="#d5575e"/>
+          <stop offset="1" stop-color="#b62a2d"/>
+        </linearGradient>
+      </defs>
       <circle cx="90" cy="90" r="${R}" fill="none" stroke="var(--ring-track)" stroke-width="14"/>
-      <circle cx="90" cy="90" r="${R}" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round"
+      <circle cx="90" cy="90" r="${R}" fill="none" stroke="url(#ringGrad)" stroke-width="14" stroke-linecap="round"
         stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/>
     </svg>`;
 }
@@ -1413,7 +1457,7 @@ function heroRing() {
   const rec = muscleRecovery();
   if (!rec.length) {
     return `<div class="hero">
-      <div class="hero-ring">${heroRingSVG(100, 'var(--green)')}
+      <div class="hero-ring">${heroRingSVG(100)}
         <div class="hero-center">
           <div class="hero-name">Готов к работе</div>
           <div class="hero-num">100%</div>
@@ -1426,15 +1470,14 @@ function heroRing() {
   if (heroIdx >= rec.length) heroIdx = 0;
   const r = rec[heroIdx];
   const name = (MUSCLES[r.muscle] || MUSCLES.other)[0];
-  const color = recColor(r.pct);
-  const daysTxt = r.pct >= 100
+    const daysTxt = r.pct >= 100
     ? 'полностью восстановлено'
     : (r.daysLeft < 1 ? 'меньше дня до восстановления' : Math.ceil(r.daysLeft) + ' дн. до восстановления');
   const dots = rec.length > 1
     ? `<div class="hero-dots">${rec.map((_, i) => `<span class="hero-dot${i === heroIdx ? ' on' : ''}"></span>`).join('')}</div>`
     : '';
   return `<div class="hero">
-    <div class="hero-ring" onclick="heroCycle()">${heroRingSVG(r.pct, color)}
+    <div class="hero-ring" onclick="heroCycle()">${heroRingSVG(r.pct)}
       <div class="hero-center">
         <div class="hero-name">${esc(name)}</div>
         <div class="hero-num">${r.pct}%</div>
