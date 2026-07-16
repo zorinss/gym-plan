@@ -577,6 +577,15 @@ body{ letter-spacing:-0.01em; }
 #pgAuth .big-btn{ margin-top:6px; }
 #pgAuth .auth-err{ color:#ff6b6b; min-height:18px; font-weight:600; }
 
+
+.hero-name{ font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+.hero-days{ font-size:13px; font-weight:800; margin-top:4px; }
+.hero-days.low{ color:var(--red); } .hero-days.mid{ color:var(--orange); } .hero-days.ok{ color:var(--green); }
+.hero-ring{ cursor:pointer; }
+.hero-dots{ display:flex; gap:6px; justify-content:center; margin-top:12px; }
+.hero-dot{ width:7px; height:7px; border-radius:50%; background:var(--border); }
+.hero-dot.on{ background:var(--accent); width:18px; border-radius:4px; }
+
 </style>
 </head>
 <body>
@@ -1352,32 +1361,88 @@ function renderResumeBanner() {
 }
 
 // ================== START VIEW ==================
-function heroRing() {
+let heroIdx = 0;
+function relDays(ts) {
+  const d = Math.floor((Date.now() - ts) / 864e5);
+  if (d <= 0) return 'сегодня';
+  if (d === 1) return 'вчера';
+  return d + ' дн. назад';
+}
+function muscleRecovery() {
   const now = Date.now();
-  const weekMs = 7 * 864e5;
-  const week = state.workouts.filter(w => {
+  const byM = {};
+  (state.workouts || []).forEach(w => {
     const t = w.startTs || (w.dateISO ? Date.parse(w.dateISO) : 0);
-    return t && (now - t) < weekMs;
-  }).length;
-  const goal = state.settings.weekGoal || 4;
-  const pct = Math.max(0, Math.min(1, week / goal));
-  const R = 76, C = 2 * Math.PI * R;
-  const off = C * (1 - pct);
-  const last = state.workouts.slice().sort((a, b) => (b.startTs || 0) - (a.startTs || 0))[0];
-  const lastTxt = last ? ('Последняя: ' + (last.dateISO ? fmtDate(last.dateISO) : '-')) : 'Ещё нет тренировок';
+    if (!t) return;
+    (w.entries || []).forEach(en => {
+      const ex = exById(en.exId); if (!ex) return;
+      const m = ex.muscle || 'other';
+      const hard = (en.sets || []).filter(s => s.type !== 'W').length;
+      if (!hard) return;
+      if (!byM[m]) byM[m] = { lastTs: 0, recentSets: 0 };
+      if (t > byM[m].lastTs) byM[m].lastTs = t;
+      if ((now - t) / 864e5 <= 5) byM[m].recentSets += hard;
+    });
+  });
+  return Object.entries(byM).map(([m, d]) => {
+    const daysSince = (now - d.lastTs) / 864e5;
+    const sets = Math.max(1, d.recentSets || 1);
+    const fatigue0 = Math.min(85, 20 + sets * 9);
+    const fullDays = Math.min(5, Math.max(2, 1.5 + sets * 0.35));
+    const remain = Math.max(0, 1 - daysSince / fullDays);
+    const pct = Math.max(0, Math.min(100, Math.round(100 - fatigue0 * remain)));
+    const daysLeft = Math.max(0, fullDays - daysSince);
+    return { muscle: m, pct, daysLeft, lastTs: d.lastTs };
+  }).filter(x => x.muscle !== 'cardio').sort((a, b) => a.pct - b.pct);
+}
+function recColor(pct) { return pct < 45 ? 'var(--red)' : pct < 75 ? 'var(--orange)' : 'var(--green)'; }
+function recClass(pct) { return pct < 45 ? 'low' : pct < 75 ? 'mid' : 'ok'; }
+function heroCycle() {
+  const n = muscleRecovery().length;
+  if (n > 1) { heroIdx = (heroIdx + 1) % n; renderStart(); }
+}
+function heroRingSVG(pct, color) {
+  const R = 76, C = 2 * Math.PI * R, off = C * (1 - pct / 100);
+  return `<svg viewBox="0 0 180 180">
+      <circle cx="90" cy="90" r="${R}" fill="none" stroke="var(--ring-track)" stroke-width="14"/>
+      <circle cx="90" cy="90" r="${R}" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round"
+        stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/>
+    </svg>`;
+}
+function heroRing() {
+  const rec = muscleRecovery();
+  if (!rec.length) {
+    return `<div class="hero">
+      <div class="hero-ring">${heroRingSVG(100, 'var(--green)')}
+        <div class="hero-center">
+          <div class="hero-name">Готов к работе</div>
+          <div class="hero-num">100%</div>
+          <div class="hero-days ok">все группы свежие</div>
+        </div>
+      </div>
+      <div class="hero-cap">Заверши тренировку - появится восстановление по мышцам</div>
+    </div>`;
+  }
+  if (heroIdx >= rec.length) heroIdx = 0;
+  const r = rec[heroIdx];
+  const name = (MUSCLES[r.muscle] || MUSCLES.other)[0];
+  const color = recColor(r.pct);
+  const daysTxt = r.pct >= 100
+    ? 'полностью восстановлено'
+    : (r.daysLeft < 1 ? 'меньше дня до восстановления' : Math.ceil(r.daysLeft) + ' дн. до восстановления');
+  const dots = rec.length > 1
+    ? `<div class="hero-dots">${rec.map((_, i) => `<span class="hero-dot${i === heroIdx ? ' on' : ''}"></span>`).join('')}</div>`
+    : '';
   return `<div class="hero">
-    <div class="hero-ring">
-      <svg viewBox="0 0 180 180">
-        <circle cx="90" cy="90" r="${R}" fill="none" stroke="var(--ring-track)" stroke-width="14"/>
-        <circle cx="90" cy="90" r="${R}" fill="none" stroke="var(--accent)" stroke-width="14" stroke-linecap="round"
-          stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/>
-      </svg>
+    <div class="hero-ring" onclick="heroCycle()">${heroRingSVG(r.pct, color)}
       <div class="hero-center">
-        <div class="hero-num">${week}</div>
-        <div class="hero-goal">из ${goal} на неделю</div>
+        <div class="hero-name">${esc(name)}</div>
+        <div class="hero-num">${r.pct}%</div>
+        <div class="hero-days ${recClass(r.pct)}">${daysTxt}</div>
       </div>
     </div>
-    <div class="hero-cap">${esc(lastTxt)}</div>
+    <div class="hero-cap">Последняя: ${relDays(r.lastTs)}${rec.length > 1 ? ' · тапни кольцо' : ''}</div>
+    ${dots}
   </div>`;
 }
 
